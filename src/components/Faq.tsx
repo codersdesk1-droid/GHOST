@@ -9,7 +9,7 @@ export const FAQS = [
   },
   {
     q: "What does GSM mean and why does it matter?",
-    a: "GSM is grams per square metre — the weight of the fabric. A typical tee is 140–180 GSM. Ours start at 280 GSM, which is why they feel substantial, stay opaque and hold their shape.",
+    a: "GSM means grams per square metre: the weight of the fabric. A typical tee is 140–180 GSM. Ours start at 280 GSM, which is why they feel substantial, stay opaque and hold their shape.",
   },
   {
     q: "Will it shrink?",
@@ -21,7 +21,7 @@ export const FAQS = [
   },
   {
     q: "Can I return or exchange?",
-    a: "Yes — unworn pieces with tags can be returned or exchanged within 14 days of delivery. Start a return from our Returns page and we’ll send a label.",
+    a: "Yes. Unworn pieces with tags can be returned or exchanged within 14 days of delivery. Start a return from our Returns page and we’ll send a label.",
   },
   {
     q: "Do you restock sold-out pieces?",

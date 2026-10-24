@@ -2,18 +2,12 @@ import Link from "next/link";
 import Faq from "@/components/Faq";
 import Anatomy from "@/components/home/Anatomy";
 import DropStrip from "@/components/home/DropStrip";
-import Hero from "@/components/home/Hero";
+import FogHero from "@/components/home/FogHero";
 import { Sparkle } from "@/components/Logo";
 import ProductCard from "@/components/ProductCard";
 import Reveal from "@/components/Reveal";
-import { getProduct, products, type Product } from "@/data/products";
+import { products } from "@/data/products";
 import { getAllProductImages } from "@/lib/images";
-
-const HERO = [
-  { slug: "shroud-heavyweight-hoodie", hotspot: { x: 62, y: 46 } },
-  { slug: "nocturne-shell-jacket", hotspot: { x: 30, y: 38 } },
-  { slug: "phantom-oversized-tee", hotspot: { x: 64, y: 50 } },
-];
 
 const STATS = [
   ["280–480", "GSM fabric weight"],
@@ -24,15 +18,11 @@ const STATS = [
 
 export default async function Home() {
   const images = await getAllProductImages(products.map((p) => p.slug));
-  const slides = HERO.map((h) => {
-    const product = getProduct(h.slug) as Product;
-    return { product, images: images[h.slug] ?? [], hotspot: h.hotspot };
-  });
   const bestSellers = products.filter((p) => p.badge === "Best seller");
 
   return (
     <>
-      <Hero slides={slides} />
+      <FogHero />
 
       {/* marquee */}
       <div className="overflow-hidden border-y border-line py-5" aria-hidden="true">
@@ -55,14 +45,14 @@ export default async function Home() {
           <div>
             <p className="eyebrow">The difference</p>
             <h2 className="mt-4 font-display text-[clamp(2.25rem,5vw,4.5rem)] leading-[0.95] font-light">
-              You feel it
+              Pick it up.
               <br />
-              <em className="text-bone/60">before you see it.</em>
+              <em className="text-bone/60">Then you&apos;ll get it.</em>
             </h2>
           </div>
           <p className="max-w-md text-mist lg:justify-self-end">
             Every Ghost piece starts with fabric nearly twice the weight of an ordinary tee, then gets cut,
-            washed and stitched to keep its shape for years — not weeks. Tap a point to look closer.
+            washed and stitched to keep its shape for years, not weeks. Tap a point to look closer.
           </p>
         </Reveal>
         <Reveal>
@@ -85,7 +75,7 @@ export default async function Home() {
           <Sparkle className="mx-auto h-6 w-6 text-bone" />
           <p className="mt-10 font-display text-[clamp(1.8rem,4vw,3.6rem)] leading-[1.15] font-light [font-variation-settings:'SOFT'_100]">
             Ghost is for the ones who don&apos;t need to announce themselves.
-            <span className="text-bone/40"> Muted colours, heavy fabric, honest construction — clothes that
+            <span className="text-bone/40"> Muted colours, heavy fabric, honest construction. Clothes that
             stay with you long after the trend has moved on.</span>
           </p>
           <p className="eyebrow mt-10">Wear a vision</p>
@@ -114,7 +104,7 @@ export default async function Home() {
         <Reveal>
           <p className="eyebrow">FAQ</p>
           <h2 className="mt-4 max-w-sm font-display text-4xl leading-tight sm:text-5xl">
-            From fit and fabric to shipping — a quick guide to your Ghost pieces.
+            Fit, fabric, shipping, returns. The things you ask us most, answered.
           </h2>
         </Reveal>
         <Reveal delay={120}>

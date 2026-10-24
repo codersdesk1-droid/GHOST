@@ -1,5 +1,5 @@
 /**
- * GHOST product catalog — the one file to edit.
+ * GHOST product catalog: the one file to edit.
  *
  * Photos: drop images into  public/products/<slug>/  (jpg, png, webp, avif).
  * They are picked up automatically and sorted by filename.
@@ -65,9 +65,9 @@ export const products: Product[] = [
     sizes: ["S", "M", "L", "XL", "XXL"],
     fabric: "100% combed cotton jersey",
     gsm: 280,
-    fit: "Oversized — size down for a regular fit",
+    fit: "Oversized. Size down for a regular fit",
     meters: [
-      { label: "Weight", value: 3, note: "280 GSM — structured, never see-through" },
+      { label: "Weight", value: 3, note: "280 GSM. Structured, never see-through" },
       { label: "Softness", value: 4, note: "Enzyme-washed for a broken-in hand feel" },
       { label: "Shape hold", value: 3, note: "Pre-shrunk, keeps its boxy drape" },
     ],
@@ -87,15 +87,15 @@ export const products: Product[] = [
     badge: "New",
     tagline: "A wider, shorter silhouette in heavyweight jersey.",
     description:
-      "Built from 300 GSM cotton with a mock-neck collar and a cropped boxy body. The heaviest tee we make — it holds its shape like a shell.",
+      "Built from 300 GSM cotton with a mock-neck collar and a cropped boxy body. The heaviest tee we make. It holds its shape like a shell.",
     colors: [BONE, FOG, BLACK],
     sizes: ["S", "M", "L", "XL"],
     soldOut: ["S"],
     fabric: "100% cotton heavyweight jersey",
     gsm: 300,
-    fit: "Boxy — true to size",
+    fit: "Boxy. True to size",
     meters: [
-      { label: "Weight", value: 4, note: "300 GSM — our heaviest jersey" },
+      { label: "Weight", value: 4, note: "300 GSM, our heaviest jersey" },
       { label: "Softness", value: 3, note: "Silicone-washed, smooth face" },
       { label: "Shape hold", value: 4, note: "Stands off the body" },
     ],
@@ -115,12 +115,12 @@ export const products: Product[] = [
     badge: "Limited",
     tagline: "Puff-printed back graphic. Numbered run.",
     description:
-      "The Phantom block with a tonal puff print across the back — a soft, raised sparkle you feel before you see. Produced in a numbered run of 300.",
+      "The Phantom block with a tonal puff print across the back: a soft, raised sparkle you feel before you see. Produced in a numbered run of 300.",
     colors: [BLACK, ASH],
     sizes: ["S", "M", "L", "XL", "XXL"],
     fabric: "100% combed cotton jersey",
     gsm: 280,
-    fit: "Oversized — size down for a regular fit",
+    fit: "Oversized. Size down for a regular fit",
     meters: [
       { label: "Weight", value: 3, note: "280 GSM jersey" },
       { label: "Print", value: 4, note: "Tonal puff print, crack-resistant" },
@@ -143,9 +143,9 @@ export const products: Product[] = [
     sizes: ["S", "M", "L", "XL", "XXL"],
     fabric: "100% cotton brushed fleece",
     gsm: 480,
-    fit: "Oversized — true to size",
+    fit: "Oversized. True to size",
     meters: [
-      { label: "Weight", value: 4, note: "480 GSM — heavy, warm, structured" },
+      { label: "Weight", value: 4, note: "480 GSM. Heavy, warm, structured" },
       { label: "Warmth", value: 4, note: "Brushed interior traps heat" },
       { label: "Softness", value: 3, note: "Gets softer every wash" },
     ],
@@ -170,7 +170,7 @@ export const products: Product[] = [
     sizes: ["S", "M", "L", "XL"],
     fabric: "100% cotton brushed fleece",
     gsm: 460,
-    fit: "Relaxed — true to size",
+    fit: "Relaxed. True to size",
     meters: [
       { label: "Weight", value: 4, note: "460 GSM fleece" },
       { label: "Warmth", value: 3, note: "Layers under a shell" },
@@ -193,7 +193,7 @@ export const products: Product[] = [
     soldOut: ["XL"],
     fabric: "Nylon ripstop, DWR finish",
     gsm: 180,
-    fit: "Boxy — size up for layering",
+    fit: "Boxy. Size up for layering",
     meters: [
       { label: "Waterproofing", value: 3, note: "Protects against light rain and snow" },
       { label: "Wind", value: 4, note: "Fully windproof shell" },
@@ -214,7 +214,7 @@ export const products: Product[] = [
     sizes: ["S", "M", "L", "XL"],
     fabric: "12 oz cotton canvas",
     gsm: 400,
-    fit: "Boxy — true to size",
+    fit: "Boxy. True to size",
     meters: [
       { label: "Durability", value: 4, note: "Triple-stitched seams" },
       { label: "Weight", value: 3, note: "12 oz canvas" },
@@ -236,7 +236,7 @@ export const products: Product[] = [
     sizes: ["28", "30", "32", "34", "36"],
     fabric: "100% cotton twill",
     gsm: 320,
-    fit: "Baggy — true to waist size",
+    fit: "Baggy. True to waist size",
     meters: [
       { label: "Bagginess", value: 4, note: "Wide leg, full stack at the hem" },
       { label: "Durability", value: 3, note: "Bar-tacked stress points" },
@@ -257,7 +257,7 @@ export const products: Product[] = [
     sizes: ["S", "M", "L", "XL"],
     fabric: "100% cotton brushed fleece",
     gsm: 460,
-    fit: "Wide — true to size",
+    fit: "Wide. True to size",
     meters: [
       { label: "Weight", value: 4, note: "460 GSM fleece" },
       { label: "Comfort", value: 4, note: "Brushed interior" },

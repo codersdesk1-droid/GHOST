@@ -5,7 +5,7 @@ import Reveal from "@/components/Reveal";
 
 export const metadata: Metadata = {
   title: "Quality",
-  description: "Heavyweight fabric, pre-shrunk cotton and double-needle construction — how Ghost pieces are made.",
+  description: "Heavyweight fabric, pre-shrunk cotton and double-needle construction. How Ghost pieces are made.",
 };
 
 const WEIGHTS = [
@@ -18,7 +18,7 @@ const WEIGHTS = [
 
 const STEPS = [
   ["Fabric", "Long-staple combed cotton, knitted heavy and dense so it stays opaque and holds a shape."],
-  ["Wash", "Enzyme and silicone washes before cutting — pre-shrunk, and soft from the first wear."],
+  ["Wash", "Enzyme and silicone washes before cutting. Pre-shrunk, and soft from the first wear."],
   ["Cut", "Patterns built for drape: dropped shoulders, wide bodies, boxy lengths."],
   ["Stitch", "Double-needle hems, flatlock seams and bar-tacks wherever stress lands."],
   ["Check", "Every piece is hand-inspected and measured before it's folded."],

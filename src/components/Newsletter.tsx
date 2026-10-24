@@ -6,7 +6,7 @@ import { useState } from "react";
 export default function Newsletter() {
   const [done, setDone] = useState(false);
   return done ? (
-    <p className="mt-8 text-sm text-mist">You&apos;re on the list. We&apos;ll be in touch — quietly.</p>
+    <p className="mt-8 text-sm text-mist">You&apos;re on the list. We&apos;ll be in touch. Quietly.</p>
   ) : (
     <form
       className="mt-8 flex max-w-md items-center rounded-full border border-line p-1.5 focus-within:border-bone/40"

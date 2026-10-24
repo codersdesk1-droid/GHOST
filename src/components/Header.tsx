@@ -49,7 +49,7 @@ export default function Header() {
           {menu ? "Close" : "Menu"}
         </button>
 
-        <Link href="/" aria-label="Ghost — home" className="absolute left-1/2 -translate-x-1/2 text-bone">
+        <Link href="/" aria-label="Ghost, home" className="absolute left-1/2 -translate-x-1/2 text-bone">
           <Wordmark className="h-7 sm:h-8" />
         </Link>
 

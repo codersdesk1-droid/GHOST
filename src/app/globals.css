@@ -42,7 +42,7 @@ body {
   color: var(--void);
 }
 
-/* Film grain over everything — the "quiet" texture */
+/* Film grain over everything: the "quiet" texture */
 body::after {
   content: "";
   position: fixed;

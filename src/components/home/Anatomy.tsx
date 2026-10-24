@@ -4,7 +4,7 @@ import { useState } from "react";
 import GarmentArt from "../GarmentArt";
 
 const POINTS = [
-  { x: 50, y: 15, title: "2×2 ribbed collar", body: "Tight rib with spandex memory. It lies flat after a hundred washes — no bacon neck." },
+  { x: 50, y: 15, title: "2×2 ribbed collar", body: "Tight rib with spandex memory. It lies flat after a hundred washes. No bacon neck." },
   { x: 20, y: 22, title: "Dropped shoulder", body: "Seam sits 6 cm below the shoulder for that slouched, oversized line." },
   { x: 62, y: 52, title: "280–300 GSM cotton", body: "Nearly twice the weight of a standard tee. Opaque, structured, never clingy." },
   { x: 40, y: 81, title: "Double-needle hem", body: "Two parallel stitch lines on every hem and cuff, so nothing twists or rolls." },

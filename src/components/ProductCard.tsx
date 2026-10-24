@@ -42,7 +42,7 @@ export default function ProductCard({
           </span>
         )}
         <div className="glass absolute inset-x-3 bottom-3 flex translate-y-3 items-center justify-between rounded-2xl px-4 py-3 opacity-0 transition duration-500 ease-ghost group-hover:translate-y-0 group-hover:opacity-100">
-          <span className="text-xs text-mist">{p.gsm} GSM · {p.fit.split(" — ")[0]}</span>
+          <span className="text-xs text-mist">{p.gsm} GSM · {p.fit.split(". ")[0]}</span>
           <span className="flex gap-1">
             {p.colors.map((c) => (
               <span key={c.name} className="h-3 w-3 rounded-full ring-1 ring-white/30" style={{ background: c.hex }} />

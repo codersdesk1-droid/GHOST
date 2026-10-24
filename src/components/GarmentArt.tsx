@@ -63,11 +63,14 @@ export default function GarmentArt({
   color,
   className = "",
   id,
+  bare,
 }: {
   category: Category;
   color: string;
   className?: string;
   id: string;
+  /** skip the backdrop glow and floor shadow (for scenes that light themselves) */
+  bare?: boolean;
 }) {
   const s = SHAPES[category];
   const light = `light-${id}`;
@@ -85,8 +88,8 @@ export default function GarmentArt({
           <stop offset="100%" stopColor="#000" stopOpacity="0.45" />
         </linearGradient>
       </defs>
-      <rect width="400" height="500" fill={`url(#${glow})`} />
-      <ellipse cx="200" cy="474" rx="150" ry="10" fill="#000" opacity="0.45" />
+      {!bare && <rect width="400" height="500" fill={`url(#${glow})`} />}
+      <ellipse cx="200" cy="474" rx="150" ry="10" fill="#000" opacity={bare ? 0.3 : 0.45} />
       <g>
         {s.extra && <path d={s.extra} fill={color} />}
         {s.extra && <path d={s.extra} fill={`url(#${light})`} />}

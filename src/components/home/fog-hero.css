@@ -1,0 +1,188 @@
+/* ───────── Fog hero ("Out of the fog") ─────────
+   Every moving layer reads the stage's --p (progress), --h (hoodie arrival), --c (fog clear),
+   written by FogHero.tsx. Transform and opacity only. */
+
+:root {
+  --tshadow: 0 1px 2px rgb(5 8 8 / .95), 0 3px 12px rgb(5 8 8 / .78), 0 10px 44px rgb(5 8 8 / .8);
+}
+
+.fh { position: relative; height: var(--hero-vh, 600vh); }
+.fh-stage {
+  --p: 0; --h: 0; --c: 0; --cue: 1; --b2: 0; --b3: 0;
+  position: sticky; top: 0; height: 100svh; overflow: hidden; isolation: isolate;
+}
+.fh-glow {
+  position: absolute; inset: -10%; z-index: -2;
+  background: radial-gradient(45% 55% at 66% 52%, rgb(215 210 197 / .12), transparent 70%);
+  opacity: calc(.4 + .6 * var(--h));
+}
+.fh-mark {
+  position: absolute; left: 4%; right: 4%; top: 50%; z-index: -1;
+  color: rgb(215 210 197 / .05);
+  opacity: calc(.25 + .75 * var(--c));
+  transform: translate3d(0, calc(-50% + (1 - var(--c)) * 6vh), 0);
+}
+
+/* fog: each layer rises past the camera as you scroll down, and thins as it clears */
+.fh-fog {
+  position: absolute; z-index: 0; pointer-events: none;
+  transform: translate3d(-50%, -50%, 0) translate3d(calc(var(--p) * var(--fx)), calc(var(--p) * var(--fy)), 0) scale(calc(1 + var(--p) * .35));
+  opacity: calc(var(--fo) * (1 - .9 * var(--c)));
+}
+.fh-fog-front { z-index: 2; }
+.fh-fog > span {
+  position: absolute; inset: 0; border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(190 194 188 / .22), rgb(150 155 150 / .09) 55%, transparent);
+  filter: blur(30px);
+  animation: fh-drift 26s ease-in-out infinite alternate;
+  animation-play-state: paused;
+}
+.is-live .fh-fog > span, .is-live .fh-motes > span { animation-play-state: running; }
+@keyframes fh-drift {
+  from { transform: translate3d(-4%, 2%, 0) scale(1); }
+  to { transform: translate3d(5%, -3%, 0) scale(1.1); }
+}
+
+/* the piece: approaches from depth and sharpens out of the mist */
+.fh-piece {
+  position: absolute; z-index: 1;
+  left: 66%; top: 52%;
+  width: min(46vw, 64vh); aspect-ratio: 4 / 5;
+  transform: translate3d(-50%, -50%, 0) translate3d(0, calc((1 - var(--h)) * 9vh), 0) scale(calc(.55 + .45 * var(--h)));
+}
+.fh-piece-soft, .fh-piece-sharp { position: absolute; inset: 0; }
+.fh-piece-soft { filter: blur(14px); opacity: calc(.55 * (1 - var(--h)) + .1); }
+.fh-piece-sharp { opacity: clamp(0, calc((var(--h) - .15) * 1.4), 1); }
+
+/* legibility layer 4: chips for small text */
+.fh-chip {
+  position: absolute; display: inline-flex; align-items: center; gap: .55rem; white-space: nowrap;
+  font-family: var(--font-plex-mono), ui-monospace, monospace; font-size: .7rem; letter-spacing: .04em;
+  padding: .5rem .8rem; border-radius: 10px; color: var(--bone);
+  background: rgb(8 12 12 / .55); border: 1px solid rgb(215 210 197 / .18);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  text-shadow: 0 1px 3px rgb(5 8 8 / .85);
+}
+.fh-chip-1 { left: 60%; top: 56%; opacity: var(--b2); }
+.fh-chip-2 { left: 58%; top: 18%; opacity: var(--b3); }
+.fh-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--bone); box-shadow: 0 0 12px rgb(215 210 197 / .9); }
+
+.fh-motes { position: absolute; inset: 0; z-index: 3; pointer-events: none; opacity: calc(.35 + .4 * var(--c)); }
+.fh-motes > span {
+  position: absolute; border-radius: 50%; background: var(--bone);
+  animation: fh-mote 14s ease-in-out infinite alternate; animation-play-state: paused;
+}
+@keyframes fh-mote {
+  from { transform: translate3d(0, 0, 0); opacity: .15; }
+  to { transform: translate3d(14px, -60px, 0); opacity: .6; }
+}
+
+/* legibility layer 1: global base scrim, heavier on the text side */
+.fh-scrim {
+  position: absolute; inset: 0; z-index: 4; pointer-events: none;
+  background:
+    radial-gradient(ellipse 120% 90% at 50% 45%, rgb(8 12 12 / 0) 35%, rgb(8 12 12 / .62) 100%),
+    linear-gradient(90deg, rgb(8 12 12 / .55), rgb(8 12 12 / 0) 55%);
+}
+
+/* captions */
+.fh-copy { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+.fh-band {
+  --o: 0; --k: 0;
+  position: absolute; left: clamp(1.25rem, 5vw, 5rem); top: 50%;
+  width: min(560px, 44vw);
+  transform: translateY(-50%);
+  opacity: var(--o);
+  visibility: visible;
+  text-shadow: var(--tshadow); /* legibility layer 3 */
+}
+.fh-b1 { --o: 1; }
+/* legibility layer 2: per-band scrim that deepens with the band */
+.fh-band::before {
+  content: ""; position: absolute; inset: -30% -25%; z-index: -1; pointer-events: none;
+  opacity: calc(.25 + .75 * var(--k));
+  background: radial-gradient(ellipse 70% 62% at 40% 50%, rgb(5 8 8 / .66) 0%, rgb(5 8 8 / .44) 46%, rgb(5 8 8 / 0) 76%);
+}
+.fh-band a, .fh-static a { pointer-events: auto; }
+.fh-label {
+  font-family: var(--font-plex-mono), ui-monospace, monospace; font-size: .72rem; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--mist); margin-bottom: 1.25rem;
+}
+.fh-h {
+  font-family: var(--font-fraunces), serif; font-weight: 300; font-variation-settings: "SOFT" 100;
+  font-size: clamp(2.6rem, 5.6vw, 5.6rem); line-height: .98; letter-spacing: -.02em; color: var(--bone);
+}
+.fh-h em { color: rgb(215 210 197 / .66); }
+.fh-h-sm { font-size: clamp(2.2rem, 4.2vw, 4.2rem); line-height: 1.02; }
+.fh-sub { margin-top: 1.4rem; max-width: 34ch; font-size: 1.05rem; line-height: 1.6; color: rgb(215 210 197 / .82); }
+
+/* band 1: blur-to-sharp, two stacked copies crossfaded by opacity only */
+.fh-b1 .fh-h { display: grid; }
+.fh-b1 .fh-soft, .fh-b1 .fh-sharp { grid-area: 1 / 1; }
+.fh-b1 .fh-soft { filter: blur(10px); opacity: calc(1 - var(--k)); }
+.fh-b1 .fh-sharp { opacity: var(--k); }
+.fh-b1 .fh-label { opacity: var(--k); }
+
+/* band 2: approach from depth */
+.fh-b2 .fh-w {
+  --kc: clamp(0, calc((var(--k) - var(--th)) * 2.6), 1);
+  display: inline-block; opacity: var(--kc);
+  transform: scale(calc(.82 + .18 * var(--kc)));
+}
+.fh-b2 .fh-sub { opacity: clamp(0, calc((var(--k) - .5) * 3), 1); }
+
+/* band 3: drift down with the falling fog */
+.fh-b3 .fh-w {
+  --kc: clamp(0, calc((var(--k) - var(--th)) * 2.8), 1);
+  display: inline-block; opacity: var(--kc);
+  transform: translateY(calc((1 - var(--kc)) * -24px));
+}
+.fh-b3 .fh-sub { opacity: clamp(0, calc((var(--k) - .55) * 3), 1); }
+
+/* band 4: words rise, then the subline, then the CTA */
+.fh-b4 .fh-w {
+  --kc: clamp(0, calc((var(--k) - var(--th)) * 2.6), 1);
+  display: inline-block; opacity: var(--kc);
+  transform: translateY(calc((1 - var(--kc)) * 28px));
+}
+.fh-b4 .fh-settle-sub { opacity: clamp(0, calc((var(--k) - .5) * 4), 1); }
+.fh-b4 .fh-cta { opacity: clamp(0, calc((var(--k) - .7) * 5), 1); }
+.fh-b4 .fh-label { opacity: clamp(0, calc(var(--k) * 3), 1); }
+
+.fh-cta { margin-top: 2.2rem; display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem; }
+.fh-btn {
+  display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 2rem;
+  border-radius: 999px; background: var(--bone); color: var(--void); font-size: .95rem; text-shadow: none;
+  transition: background-color .4s var(--ease-ghost), transform .4s var(--ease-ghost);
+}
+.fh-btn:hover { background: #fff; transform: translateY(-2px); }
+.fh-link { font-size: .9rem; color: var(--mist); text-decoration: underline; text-underline-offset: 6px; transition: color .3s; }
+.fh-link:hover { color: var(--bone); }
+.fh-btn:focus-visible, .fh-link:focus-visible { outline: 2px solid var(--bone); outline-offset: 4px; }
+
+.fh-static { display: none; }
+.fh-cue {
+  position: absolute; left: 50%; bottom: 2rem; z-index: 6; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: .6rem;
+  font-family: var(--font-plex-mono), ui-monospace, monospace; font-size: .65rem; letter-spacing: .3em; text-transform: uppercase;
+  color: var(--mist); opacity: var(--cue);
+}
+
+@media (max-height: 560px) { .fh-cue, .fh-chip { display: none; } }
+
+/* the five static-hero gates; must match GATES in FogHero.tsx */
+@media (max-width: 720px), (orientation: portrait) and (max-width: 1024px), (orientation: portrait) and (pointer: coarse), (orientation: landscape) and (pointer: coarse) and (max-height: 560px), (prefers-reduced-motion: reduce) {
+  .fh { height: auto; }
+  .fh-stage { --p: 1 !important; --h: 1 !important; --c: 1 !important; --cue: 0 !important; position: relative; min-height: 100svh; }
+  .fh-band, .fh-cue, .fh-chip { display: none; }
+  .fh-piece { left: 50%; top: 38%; width: min(86vw, 52svh); }
+  .fh-scrim { background: linear-gradient(180deg, rgb(8 12 12 / 0) 35%, rgb(8 12 12 / .85) 78%); }
+  .fh-static {
+    display: block; position: absolute; left: 1.25rem; right: 1.25rem; bottom: 2.5rem;
+    text-shadow: var(--tshadow);
+  }
+  .fh-static .fh-h { font-size: clamp(2.6rem, 11vw, 4rem); }
+  .fh-fog > span, .fh-motes > span { animation: none; }
+}
+
+body.paused *, body.paused *::before, body.paused *::after { animation-play-state: paused !important; }

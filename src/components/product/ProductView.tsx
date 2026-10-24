@@ -125,7 +125,7 @@ export default function ProductView({ product: p, images }: { product: Product; 
           <div className="mt-8">
             <div className="flex items-center justify-between">
               <p className={`text-sm transition ${nudge ? "animate-[shake_0.4s] text-[#e8b4a0]" : ""}`}>
-                Size {nudge && <span className="ml-1 text-xs">— pick one first</span>}
+                Size {nudge && <span className="ml-1 text-xs">Pick one first</span>}
               </p>
               <button onClick={() => setChart(true)} className="text-sm text-mist underline underline-offset-4 hover:text-bone">
                 Size chart

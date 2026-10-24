@@ -69,7 +69,7 @@ export default function SizeChart({ open, onClose, category }: { open: boolean; 
             Close
           </button>
         </div>
-        <p className="mt-2 text-sm text-mist">Garment measured flat, in centimetres. Oversized by design — size down for a regular fit.</p>
+        <p className="mt-2 text-sm text-mist">Garment measured flat, in centimetres. Oversized by design. Size down for a regular fit.</p>
         <div className="mt-6 overflow-x-auto">
           <table className="w-full text-sm tabular-nums">
             <thead>

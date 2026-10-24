@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-// Placeholder policy copy — have these reviewed before taking real orders.
+// Placeholder policy copy: have these reviewed before taking real orders.
 const PAGES: Record<string, { title: string; body: string[] }> = {
   shipping: {
     title: "Shipping",
@@ -25,8 +25,8 @@ const PAGES: Record<string, { title: string; body: string[] }> = {
   contact: {
     title: "Contact",
     body: [
-      "Email: hello@ghost.store — we reply within one business day.",
-      "Instagram: @ghost — DMs open for styling questions.",
+      "Email: hello@ghost.store. We reply within one business day.",
+      "Instagram: @ghost. DMs are open for styling questions.",
       "For order issues, include your order number so we can help faster.",
     ],
   },
