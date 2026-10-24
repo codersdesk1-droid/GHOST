@@ -4,11 +4,10 @@ import { useMemo, useState } from "react";
 import { formatPrice, type Product } from "@/data/products";
 import type { CatalogProduct } from "@/lib/catalog";
 import { cart } from "../cart/store";
-import { imagesForColor } from "../cart/pickImage";
 import ProductGallery, { type Shot } from "./ProductGallery";
 import SizeChart from "./SizeChart";
 
-export default function ProductView({ product: p, images }: { product: CatalogProduct; images: string[] }) {
+export default function ProductView({ product: p }: { product: CatalogProduct }) {
   const [color, setColor] = useState(p.colors[0]);
   const [size, setSize] = useState<string | null>(null);
   const [chart, setChart] = useState(false);
@@ -18,9 +17,12 @@ export default function ProductView({ product: p, images }: { product: CatalogPr
 
   // Real photos for this colour, or three placeholder views of the drawn garment
   const shots = useMemo<Shot[]>(() => {
-    const own = imagesForColor(images, color.name);
-    return own.length ? own : ["front", "detail", "back"];
-  }, [images, color.name]);
+    // this colour's photos first, then photos that show every colour
+    const own = p.photos.filter((ph) => ph.color === color.name);
+    const shared = p.photos.filter((ph) => !ph.color);
+    const pick = own.length || shared.length ? [...own, ...shared] : p.photos;
+    return pick.length ? pick.map((ph) => ph.url) : ["front", "detail", "back"];
+  }, [p.photos, color.name]);
 
   const left = size ? (p.stock[`${color.name}|${size}`] ?? 0) : 0;
 

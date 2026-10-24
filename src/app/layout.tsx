@@ -5,8 +5,8 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { ClerkProvider } from "@clerk/nextjs";
 import { CatalogProvider } from "@/components/cart/CatalogProvider";
-import { getCatalog } from "@/lib/catalog";
-import { getAllProductImages } from "@/lib/images";
+import { getCatalog, photoMap } from "@/lib/catalog";
+import { getSettings } from "@/lib/settings";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -41,7 +41,8 @@ export const viewport: Viewport = {
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const catalog = await getCatalog();
-  const images = await getAllProductImages(catalog.map((p) => p.slug));
+  const settings = await getSettings();
+  const images = photoMap(catalog);
   return (
     <html lang="en" className={`${fraunces.variable} ${jost.variable} ${plexMono.variable} antialiased`}>
       <body className="flex min-h-dvh flex-col">
@@ -62,11 +63,11 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             },
           }}
         >
-        <CatalogProvider products={catalog}>
+        <CatalogProvider products={catalog} shipping={{ shippingCents: settings.shippingCents, freeShippingCents: settings.freeShippingCents }}>
           <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[80] focus:rounded-full focus:bg-bone focus:px-4 focus:py-2 focus:text-void">
           Skip to content
         </a>
-        <Header />
+        <Header announcement={settings.announcement} />
         <main id="main" className="flex-1">
           {children}
         </main>

@@ -1,0 +1,1415 @@
+[
+  {
+    "id": "table.ProductColor",
+    "label": "Create table \"ProductColor\"",
+    "summary": "Creates table \"ProductColor\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "ProductColor"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"ProductColor\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ProductColor\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"ProductColor\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"ProductColor\"",
+        "sql": "CREATE TABLE \"public\".\"ProductColor\" (\n  \"hex\" text NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"name\" text NOT NULL,\n  \"position\" int4 DEFAULT 0 NOT NULL,\n  \"productId\" int4 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"ProductColor\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3))) AS \"result\"",
+        "params": [
+          "\"public\".\"ProductColor\"",
+          "r",
+          "p"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"ProductColor\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "table.ProductImage",
+    "label": "Create table \"ProductImage\"",
+    "summary": "Creates table \"ProductImage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "ProductImage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"ProductImage\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ProductImage\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"ProductImage\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"ProductImage\"",
+        "sql": "CREATE TABLE \"public\".\"ProductImage\" (\n  \"alt\" text DEFAULT '' NOT NULL,\n  \"color\" text,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"pathname\" text NOT NULL,\n  \"position\" int4 DEFAULT 0 NOT NULL,\n  \"productId\" int4 NOT NULL,\n  \"url\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"ProductImage\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3))) AS \"result\"",
+        "params": [
+          "\"public\".\"ProductImage\"",
+          "r",
+          "p"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"ProductImage\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "table.ProductMeter",
+    "label": "Create table \"ProductMeter\"",
+    "summary": "Creates table \"ProductMeter\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "ProductMeter"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"ProductMeter\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ProductMeter\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"ProductMeter\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"ProductMeter\"",
+        "sql": "CREATE TABLE \"public\".\"ProductMeter\" (\n  \"id\" SERIAL NOT NULL,\n  \"label\" text NOT NULL,\n  \"note\" text DEFAULT '' NOT NULL,\n  \"position\" int4 DEFAULT 0 NOT NULL,\n  \"productId\" int4 NOT NULL,\n  \"value\" int4 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"ProductMeter\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3))) AS \"result\"",
+        "params": [
+          "\"public\".\"ProductMeter\"",
+          "r",
+          "p"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"ProductMeter\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "table.StaffMember",
+    "label": "Create table \"StaffMember\"",
+    "summary": "Creates table \"StaffMember\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "StaffMember"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"StaffMember\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"StaffMember\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"StaffMember\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"StaffMember\"",
+        "sql": "CREATE TABLE \"public\".\"StaffMember\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"email\" text NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"role\" text DEFAULT 'staff' NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"StaffMember\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3))) AS \"result\"",
+        "params": [
+          "\"public\".\"StaffMember\"",
+          "r",
+          "p"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"StaffMember\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "table.StoreSettings",
+    "label": "Create table \"StoreSettings\"",
+    "summary": "Creates table \"StoreSettings\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "StoreSettings"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"StoreSettings\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"StoreSettings\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"StoreSettings\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"StoreSettings\"",
+        "sql": "CREATE TABLE \"public\".\"StoreSettings\" (\n  \"announcement\" text DEFAULT '' NOT NULL,\n  \"contactEmail\" text DEFAULT '' NOT NULL,\n  \"freeShippingCents\" int4 DEFAULT 15000 NOT NULL,\n  \"id\" int4 NOT NULL,\n  \"instagram\" text DEFAULT '' NOT NULL,\n  \"policyContact\" text DEFAULT '' NOT NULL,\n  \"policyPrivacy\" text DEFAULT '' NOT NULL,\n  \"policyReturns\" text DEFAULT '' NOT NULL,\n  \"policyShipping\" text DEFAULT '' NOT NULL,\n  \"policyTerms\" text DEFAULT '' NOT NULL,\n  \"shippingCents\" int4 DEFAULT 1200 NOT NULL,\n  \"storeName\" text DEFAULT 'Ghost' NOT NULL,\n  \"tagline\" text DEFAULT 'Wear a vision' NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"StoreSettings\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3))) AS \"result\"",
+        "params": [
+          "\"public\".\"StoreSettings\"",
+          "r",
+          "p"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"StoreSettings\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "column.public.Order.confirmationEmailAt",
+    "label": "Add column \"confirmationEmailAt\" to \"Order\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "confirmationEmailAt",
+        "table": "Order"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"confirmationEmailAt\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Order",
+          "confirmationEmailAt"
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "column \"confirmationEmailAt\" on \"Order\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"confirmationEmailAt\"",
+        "sql": "ALTER TABLE \"public\".\"Order\" ADD COLUMN \"confirmationEmailAt\" timestamptz"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"confirmationEmailAt\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Order",
+          "confirmationEmailAt"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"confirmationEmailAt\" on \"Order\""
+        }
+      },
+      {
+        "description": "verify column \"confirmationEmailAt\" has type \"timestamp with time zone\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_attribute\" AS \"a\" INNER JOIN \"pg_class\" AS \"c\" ON \"c\".\"oid\" = \"a\".\"attrelid\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"a\".\"attname\" = $3 AND (format_type(\"a\".\"atttypid\", \"a\".\"atttypmod\")) = $4 AND NOT (\"a\".\"attisdropped\"))) AS \"result\"",
+        "params": [
+          "public",
+          "Order",
+          "confirmationEmailAt",
+          "timestamp with time zone"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.Order.shippedEmailAt",
+    "label": "Add column \"shippedEmailAt\" to \"Order\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "shippedEmailAt",
+        "table": "Order"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"shippedEmailAt\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Order",
+          "shippedEmailAt"
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "column \"shippedEmailAt\" on \"Order\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"shippedEmailAt\"",
+        "sql": "ALTER TABLE \"public\".\"Order\" ADD COLUMN \"shippedEmailAt\" timestamptz"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"shippedEmailAt\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Order",
+          "shippedEmailAt"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"shippedEmailAt\" on \"Order\""
+        }
+      },
+      {
+        "description": "verify column \"shippedEmailAt\" has type \"timestamp with time zone\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_attribute\" AS \"a\" INNER JOIN \"pg_class\" AS \"c\" ON \"c\".\"oid\" = \"a\".\"attrelid\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"a\".\"attname\" = $3 AND (format_type(\"a\".\"atttypid\", \"a\".\"atttypmod\")) = $4 AND NOT (\"a\".\"attisdropped\"))) AS \"result\"",
+        "params": [
+          "public",
+          "Order",
+          "shippedEmailAt",
+          "timestamp with time zone"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.Product.care",
+    "label": "Add column \"care\" to \"Product\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "care",
+        "table": "Product"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"care\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "care"
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "column \"care\" on \"Product\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"care\"",
+        "sql": "ALTER TABLE \"public\".\"Product\" ADD COLUMN \"care\" text DEFAULT '' NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"care\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "care"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"care\" on \"Product\""
+        }
+      },
+      {
+        "description": "verify column \"care\" has type \"text\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_attribute\" AS \"a\" INNER JOIN \"pg_class\" AS \"c\" ON \"c\".\"oid\" = \"a\".\"attrelid\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"a\".\"attname\" = $3 AND (format_type(\"a\".\"atttypid\", \"a\".\"atttypmod\")) = $4 AND NOT (\"a\".\"attisdropped\"))) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "care",
+          "text"
+        ]
+      },
+      {
+        "description": "verify column \"care\" is NOT NULL",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "care",
+          "NO"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.Product.category",
+    "label": "Add column \"category\" to \"Product\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "category",
+        "table": "Product"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"category\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "category"
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "column \"category\" on \"Product\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"category\"",
+        "sql": "ALTER TABLE \"public\".\"Product\" ADD COLUMN \"category\" text DEFAULT 'tees' NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"category\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "category"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"category\" on \"Product\""
+        }
+      },
+      {
+        "description": "verify column \"category\" has type \"text\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_attribute\" AS \"a\" INNER JOIN \"pg_class\" AS \"c\" ON \"c\".\"oid\" = \"a\".\"attrelid\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"a\".\"attname\" = $3 AND (format_type(\"a\".\"atttypid\", \"a\".\"atttypmod\")) = $4 AND NOT (\"a\".\"attisdropped\"))) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "category",
+          "text"
+        ]
+      },
+      {
+        "description": "verify column \"category\" is NOT NULL",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "category",
+          "NO"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.Product.description",
+    "label": "Add column \"description\" to \"Product\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "description",
+        "table": "Product"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"description\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "description"
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "column \"description\" on \"Product\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"description\"",
+        "sql": "ALTER TABLE \"public\".\"Product\" ADD COLUMN \"description\" text DEFAULT '' NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"description\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "description"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"description\" on \"Product\""
+        }
+      },
+      {
+        "description": "verify column \"description\" has type \"text\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_attribute\" AS \"a\" INNER JOIN \"pg_class\" AS \"c\" ON \"c\".\"oid\" = \"a\".\"attrelid\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"a\".\"attname\" = $3 AND (format_type(\"a\".\"atttypid\", \"a\".\"atttypmod\")) = $4 AND NOT (\"a\".\"attisdropped\"))) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "description",
+          "text"
+        ]
+      },
+      {
+        "description": "verify column \"description\" is NOT NULL",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "description",
+          "NO"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.Product.details",
+    "label": "Add column \"details\" to \"Product\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "details",
+        "table": "Product"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"details\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "details"
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "column \"details\" on \"Product\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"details\"",
+        "sql": "ALTER TABLE \"public\".\"Product\" ADD COLUMN \"details\" text DEFAULT '' NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"details\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "details"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"details\" on \"Product\""
+        }
+      },
+      {
+        "description": "verify column \"details\" has type \"text\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_attribute\" AS \"a\" INNER JOIN \"pg_class\" AS \"c\" ON \"c\".\"oid\" = \"a\".\"attrelid\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"a\".\"attname\" = $3 AND (format_type(\"a\".\"atttypid\", \"a\".\"atttypmod\")) = $4 AND NOT (\"a\".\"attisdropped\"))) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "details",
+          "text"
+        ]
+      },
+      {
+        "description": "verify column \"details\" is NOT NULL",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "details",
+          "NO"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.Product.fabric",
+    "label": "Add column \"fabric\" to \"Product\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "fabric",
+        "table": "Product"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"fabric\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "fabric"
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "column \"fabric\" on \"Product\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"fabric\"",
+        "sql": "ALTER TABLE \"public\".\"Product\" ADD COLUMN \"fabric\" text DEFAULT '' NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"fabric\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "fabric"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"fabric\" on \"Product\""
+        }
+      },
+      {
+        "description": "verify column \"fabric\" has type \"text\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_attribute\" AS \"a\" INNER JOIN \"pg_class\" AS \"c\" ON \"c\".\"oid\" = \"a\".\"attrelid\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"a\".\"attname\" = $3 AND (format_type(\"a\".\"atttypid\", \"a\".\"atttypmod\")) = $4 AND NOT (\"a\".\"attisdropped\"))) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "fabric",
+          "text"
+        ]
+      },
+      {
+        "description": "verify column \"fabric\" is NOT NULL",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "fabric",
+          "NO"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.Product.fit",
+    "label": "Add column \"fit\" to \"Product\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "fit",
+        "table": "Product"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"fit\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "fit"
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "column \"fit\" on \"Product\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"fit\"",
+        "sql": "ALTER TABLE \"public\".\"Product\" ADD COLUMN \"fit\" text DEFAULT '' NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"fit\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "fit"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"fit\" on \"Product\""
+        }
+      },
+      {
+        "description": "verify column \"fit\" has type \"text\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_attribute\" AS \"a\" INNER JOIN \"pg_class\" AS \"c\" ON \"c\".\"oid\" = \"a\".\"attrelid\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"a\".\"attname\" = $3 AND (format_type(\"a\".\"atttypid\", \"a\".\"atttypmod\")) = $4 AND NOT (\"a\".\"attisdropped\"))) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "fit",
+          "text"
+        ]
+      },
+      {
+        "description": "verify column \"fit\" is NOT NULL",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "fit",
+          "NO"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.Product.gsm",
+    "label": "Add column \"gsm\" to \"Product\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "gsm",
+        "table": "Product"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"gsm\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "gsm"
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "column \"gsm\" on \"Product\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"gsm\"",
+        "sql": "ALTER TABLE \"public\".\"Product\" ADD COLUMN \"gsm\" int4 DEFAULT 0 NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"gsm\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "gsm"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"gsm\" on \"Product\""
+        }
+      },
+      {
+        "description": "verify column \"gsm\" has type \"integer\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_attribute\" AS \"a\" INNER JOIN \"pg_class\" AS \"c\" ON \"c\".\"oid\" = \"a\".\"attrelid\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"a\".\"attname\" = $3 AND (format_type(\"a\".\"atttypid\", \"a\".\"atttypmod\")) = $4 AND NOT (\"a\".\"attisdropped\"))) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "gsm",
+          "integer"
+        ]
+      },
+      {
+        "description": "verify column \"gsm\" is NOT NULL",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "gsm",
+          "NO"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.Product.position",
+    "label": "Add column \"position\" to \"Product\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "position",
+        "table": "Product"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"position\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "position"
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "column \"position\" on \"Product\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"position\"",
+        "sql": "ALTER TABLE \"public\".\"Product\" ADD COLUMN \"position\" int4 DEFAULT 0 NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"position\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "position"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"position\" on \"Product\""
+        }
+      },
+      {
+        "description": "verify column \"position\" has type \"integer\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_attribute\" AS \"a\" INNER JOIN \"pg_class\" AS \"c\" ON \"c\".\"oid\" = \"a\".\"attrelid\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"a\".\"attname\" = $3 AND (format_type(\"a\".\"atttypid\", \"a\".\"atttypmod\")) = $4 AND NOT (\"a\".\"attisdropped\"))) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "position",
+          "integer"
+        ]
+      },
+      {
+        "description": "verify column \"position\" is NOT NULL",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "position",
+          "NO"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.Product.sizes",
+    "label": "Add column \"sizes\" to \"Product\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "sizes",
+        "table": "Product"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"sizes\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "sizes"
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "column \"sizes\" on \"Product\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"sizes\"",
+        "sql": "ALTER TABLE \"public\".\"Product\" ADD COLUMN \"sizes\" text DEFAULT '' NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"sizes\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "sizes"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"sizes\" on \"Product\""
+        }
+      },
+      {
+        "description": "verify column \"sizes\" has type \"text\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_attribute\" AS \"a\" INNER JOIN \"pg_class\" AS \"c\" ON \"c\".\"oid\" = \"a\".\"attrelid\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"a\".\"attname\" = $3 AND (format_type(\"a\".\"atttypid\", \"a\".\"atttypmod\")) = $4 AND NOT (\"a\".\"attisdropped\"))) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "sizes",
+          "text"
+        ]
+      },
+      {
+        "description": "verify column \"sizes\" is NOT NULL",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "sizes",
+          "NO"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.Product.tagline",
+    "label": "Add column \"tagline\" to \"Product\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "tagline",
+        "table": "Product"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"tagline\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "tagline"
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "column \"tagline\" on \"Product\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"tagline\"",
+        "sql": "ALTER TABLE \"public\".\"Product\" ADD COLUMN \"tagline\" text DEFAULT '' NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"tagline\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "tagline"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"tagline\" on \"Product\""
+        }
+      },
+      {
+        "description": "verify column \"tagline\" has type \"text\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_attribute\" AS \"a\" INNER JOIN \"pg_class\" AS \"c\" ON \"c\".\"oid\" = \"a\".\"attrelid\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"a\".\"attname\" = $3 AND (format_type(\"a\".\"atttypid\", \"a\".\"atttypmod\")) = $4 AND NOT (\"a\".\"attisdropped\"))) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "tagline",
+          "text"
+        ]
+      },
+      {
+        "description": "verify column \"tagline\" is NOT NULL",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
+        "params": [
+          "public",
+          "Product",
+          "tagline",
+          "NO"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.StaffMember.StaffMember_email_key",
+    "label": "Add unique constraint on \"StaffMember\" (email)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "StaffMember_email_key",
+        "table": "StaffMember"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"StaffMember_email_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "StaffMember_email_key",
+          "public",
+          "\"public\".\"StaffMember\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "constraint \"StaffMember_email_key\" on \"StaffMember\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"StaffMember_email_key\"",
+        "sql": "ALTER TABLE \"public\".\"StaffMember\" ADD CONSTRAINT \"StaffMember_email_key\" UNIQUE (\"email\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify unique constraint \"StaffMember_email_key\" exists on (email)",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb)) AS \"result\"",
+        "params": [
+          "StaffMember_email_key",
+          "public",
+          "\"public\".\"StaffMember\"",
+          "u",
+          "[\"email\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.ProductColor.ProductColor_productId_idx_5858600a",
+    "label": "Create index \"ProductColor_productId_idx_5858600a\" on \"ProductColor\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "ProductColor_productId_idx_5858600a",
+        "table": "ProductColor"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"ProductColor_productId_idx_5858600a\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ProductColor_productId_idx_5858600a\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"ProductColor_productId_idx_5858600a\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"ProductColor_productId_idx_5858600a\"",
+        "sql": "CREATE INDEX \"ProductColor_productId_idx_5858600a\" ON \"public\".\"ProductColor\" (\"productId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"ProductColor_productId_idx_5858600a\" exists on \"ProductColor\" with the planned definition",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_index\" AS \"i\" ON \"i\".\"indexrelid\" = \"c\".\"oid\" INNER JOIN \"pg_am\" AS \"m\" ON \"m\".\"oid\" = \"c\".\"relam\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3) AND \"i\".\"indrelid\" = to_regclass($4) AND NOT (\"i\".\"indisunique\") AND \"m\".\"amname\" = $5 AND (\"i\".\"indexprs\" IS NULL AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"i\".\"indkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"i\".\"indrelid\" AND key_attribute.attnum = key_column.attnum) = ($6)::jsonb) AND \"i\".\"indpred\" IS NULL)) AS \"result\"",
+        "params": [
+          "\"public\".\"ProductColor_productId_idx_5858600a\"",
+          "i",
+          "I",
+          "\"public\".\"ProductColor\"",
+          "btree",
+          "[\"productId\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.ProductImage.ProductImage_productId_idx_5858600a",
+    "label": "Create index \"ProductImage_productId_idx_5858600a\" on \"ProductImage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "ProductImage_productId_idx_5858600a",
+        "table": "ProductImage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"ProductImage_productId_idx_5858600a\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ProductImage_productId_idx_5858600a\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"ProductImage_productId_idx_5858600a\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"ProductImage_productId_idx_5858600a\"",
+        "sql": "CREATE INDEX \"ProductImage_productId_idx_5858600a\" ON \"public\".\"ProductImage\" (\"productId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"ProductImage_productId_idx_5858600a\" exists on \"ProductImage\" with the planned definition",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_index\" AS \"i\" ON \"i\".\"indexrelid\" = \"c\".\"oid\" INNER JOIN \"pg_am\" AS \"m\" ON \"m\".\"oid\" = \"c\".\"relam\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3) AND \"i\".\"indrelid\" = to_regclass($4) AND NOT (\"i\".\"indisunique\") AND \"m\".\"amname\" = $5 AND (\"i\".\"indexprs\" IS NULL AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"i\".\"indkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"i\".\"indrelid\" AND key_attribute.attnum = key_column.attnum) = ($6)::jsonb) AND \"i\".\"indpred\" IS NULL)) AS \"result\"",
+        "params": [
+          "\"public\".\"ProductImage_productId_idx_5858600a\"",
+          "i",
+          "I",
+          "\"public\".\"ProductImage\"",
+          "btree",
+          "[\"productId\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.ProductMeter.ProductMeter_productId_idx_5858600a",
+    "label": "Create index \"ProductMeter_productId_idx_5858600a\" on \"ProductMeter\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "ProductMeter_productId_idx_5858600a",
+        "table": "ProductMeter"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"ProductMeter_productId_idx_5858600a\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ProductMeter_productId_idx_5858600a\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"ProductMeter_productId_idx_5858600a\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"ProductMeter_productId_idx_5858600a\"",
+        "sql": "CREATE INDEX \"ProductMeter_productId_idx_5858600a\" ON \"public\".\"ProductMeter\" (\"productId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"ProductMeter_productId_idx_5858600a\" exists on \"ProductMeter\" with the planned definition",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_index\" AS \"i\" ON \"i\".\"indexrelid\" = \"c\".\"oid\" INNER JOIN \"pg_am\" AS \"m\" ON \"m\".\"oid\" = \"c\".\"relam\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3) AND \"i\".\"indrelid\" = to_regclass($4) AND NOT (\"i\".\"indisunique\") AND \"m\".\"amname\" = $5 AND (\"i\".\"indexprs\" IS NULL AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"i\".\"indkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"i\".\"indrelid\" AND key_attribute.attnum = key_column.attnum) = ($6)::jsonb) AND \"i\".\"indpred\" IS NULL)) AS \"result\"",
+        "params": [
+          "\"public\".\"ProductMeter_productId_idx_5858600a\"",
+          "i",
+          "I",
+          "\"public\".\"ProductMeter\"",
+          "btree",
+          "[\"productId\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.ProductColor.ProductColor_productId_fkey",
+    "label": "Add foreign key \"ProductColor_productId_fkey\" on \"ProductColor\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "ProductColor_productId_fkey",
+        "table": "ProductColor"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"ProductColor_productId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ProductColor_productId_fkey",
+          "public",
+          "\"public\".\"ProductColor\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "FK \"ProductColor_productId_fkey\" on \"ProductColor\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"ProductColor_productId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"ProductColor\"\nADD CONSTRAINT \"ProductColor_productId_fkey\"\nFOREIGN KEY (\"productId\")\nREFERENCES \"public\".\"Product\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"ProductColor_productId_fkey\" exists with the planned columns, referenced table and actions",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb AND \"c\".\"confrelid\" = to_regclass($6) AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"confkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"confrelid\" AND key_attribute.attnum = key_column.attnum) = ($7)::jsonb AND \"c\".\"confdeltype\" = $8 AND \"c\".\"confupdtype\" = $9)) AS \"result\"",
+        "params": [
+          "ProductColor_productId_fkey",
+          "public",
+          "\"public\".\"ProductColor\"",
+          "f",
+          "[\"productId\"]",
+          "\"public\".\"Product\"",
+          "[\"id\"]",
+          "c",
+          "a"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.ProductImage.ProductImage_productId_fkey",
+    "label": "Add foreign key \"ProductImage_productId_fkey\" on \"ProductImage\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "ProductImage_productId_fkey",
+        "table": "ProductImage"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"ProductImage_productId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ProductImage_productId_fkey",
+          "public",
+          "\"public\".\"ProductImage\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "FK \"ProductImage_productId_fkey\" on \"ProductImage\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"ProductImage_productId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"ProductImage\"\nADD CONSTRAINT \"ProductImage_productId_fkey\"\nFOREIGN KEY (\"productId\")\nREFERENCES \"public\".\"Product\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"ProductImage_productId_fkey\" exists with the planned columns, referenced table and actions",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb AND \"c\".\"confrelid\" = to_regclass($6) AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"confkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"confrelid\" AND key_attribute.attnum = key_column.attnum) = ($7)::jsonb AND \"c\".\"confdeltype\" = $8 AND \"c\".\"confupdtype\" = $9)) AS \"result\"",
+        "params": [
+          "ProductImage_productId_fkey",
+          "public",
+          "\"public\".\"ProductImage\"",
+          "f",
+          "[\"productId\"]",
+          "\"public\".\"Product\"",
+          "[\"id\"]",
+          "c",
+          "a"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.ProductMeter.ProductMeter_productId_fkey",
+    "label": "Add foreign key \"ProductMeter_productId_fkey\" on \"ProductMeter\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "ProductMeter_productId_fkey",
+        "table": "ProductMeter"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"ProductMeter_productId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "ProductMeter_productId_fkey",
+          "public",
+          "\"public\".\"ProductMeter\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "FK \"ProductMeter_productId_fkey\" on \"ProductMeter\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"ProductMeter_productId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"ProductMeter\"\nADD CONSTRAINT \"ProductMeter_productId_fkey\"\nFOREIGN KEY (\"productId\")\nREFERENCES \"public\".\"Product\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"ProductMeter_productId_fkey\" exists with the planned columns, referenced table and actions",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb AND \"c\".\"confrelid\" = to_regclass($6) AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"confkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"confrelid\" AND key_attribute.attnum = key_column.attnum) = ($7)::jsonb AND \"c\".\"confdeltype\" = $8 AND \"c\".\"confupdtype\" = $9)) AS \"result\"",
+        "params": [
+          "ProductMeter_productId_fkey",
+          "public",
+          "\"public\".\"ProductMeter\"",
+          "f",
+          "[\"productId\"]",
+          "\"public\".\"Product\"",
+          "[\"id\"]",
+          "c",
+          "a"
+        ]
+      }
+    ]
+  }
+]

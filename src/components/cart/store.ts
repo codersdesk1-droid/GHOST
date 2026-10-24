@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import type { CatalogProduct } from "@/lib/catalog";
+import type { ShippingRules } from "./CatalogProvider";
 
 export type CartLine = { slug: string; color: string; size: string; qty: number };
 
@@ -75,10 +76,14 @@ export function useCart() {
 }
 
 /** Display totals only. The server recomputes everything from the database at checkout. */
-export function cartTotals(lines: CartLine[], find: (slug: string) => CatalogProduct | undefined) {
+export function cartTotals(
+  lines: CartLine[],
+  find: (slug: string) => CatalogProduct | undefined,
+  rules: ShippingRules = { shippingCents: 1200, freeShippingCents: 15000 },
+) {
   const live = lines.filter((l) => find(l.slug));
   const subtotal = live.reduce((sum, l) => sum + (find(l.slug)?.price ?? 0) * l.qty, 0);
   const count = live.reduce((n, l) => n + l.qty, 0);
-  const shipping = subtotal === 0 || subtotal >= 150 ? 0 : 12;
+  const shipping = subtotal === 0 || subtotal * 100 >= rules.freeShippingCents ? 0 : rules.shippingCents / 100;
   return { subtotal, count, shipping, total: subtotal + shipping };
 }

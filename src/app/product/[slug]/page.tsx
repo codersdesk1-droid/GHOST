@@ -3,12 +3,10 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import ProductCard from "@/components/ProductCard";
 import ProductView from "@/components/product/ProductView";
-import { products as editorial } from "@/data/products";
-import { getCatalog, getCatalogProduct } from "@/lib/catalog";
-import { getAllProductImages, getProductImages } from "@/lib/images";
+import { getCatalog, getCatalogProduct, photoMap } from "@/lib/catalog";
 
-export function generateStaticParams() {
-  return editorial.map((p) => ({ slug: p.slug }));
+export async function generateStaticParams() {
+  return (await getCatalog()).map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata(props: PageProps<"/product/[slug]">): Promise<Metadata> {
@@ -31,15 +29,14 @@ async function Product({ params }: { params: PageProps<"/product/[slug]">["param
   const products = await getCatalog();
   if (!product) notFound();
 
-  const images = await getProductImages(slug);
   const related = products.filter((p) => p.slug !== slug && p.category === product.category).concat(
     products.filter((p) => p.category !== product.category),
   ).slice(0, 4);
-  const relatedImages = await getAllProductImages(related.map((p) => p.slug));
+  const relatedImages = photoMap(related);
 
   return (
     <>
-      <ProductView product={product} images={images} />
+      <ProductView product={product} />
       <section className="mx-auto max-w-[1440px] px-5 pt-24 sm:px-10">
         <h2 className="font-display text-4xl">Wear it with</h2>
         <div className="mt-8 grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-4 lg:grid-cols-4">

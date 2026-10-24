@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { OrderForm } from "@/components/admin/Forms";
-import { requireAdmin } from "@/lib/auth";
+import { requireStaff } from "@/lib/auth";
 import { formatCents, ORDER_STATUSES } from "@/lib/orders";
 import { db } from "@/prisma/db";
 
@@ -29,7 +29,7 @@ function address(json: string | null) {
 }
 
 async function Orders({ searchParams }: { searchParams: PageProps<"/admin/orders">["searchParams"] }) {
-  await requireAdmin();
+  await requireStaff();
   const sp = await searchParams;
   const status = typeof sp.status === "string" && FILTERS.includes(sp.status) ? sp.status : "all";
 

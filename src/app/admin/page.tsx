@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { requireAdmin } from "@/lib/auth";
+import { requireStaff } from "@/lib/auth";
 import { formatCents } from "@/lib/orders";
 import { db } from "@/prisma/db";
 
@@ -15,7 +15,7 @@ export default function AdminHome() {
 }
 
 async function Overview() {
-  await requireAdmin();
+  await requireStaff();
 
   const orders = await db.orm.public.Order.select("id", "number", "status", "totalCents", "email", "createdAt")
     .orderBy((o) => o.id.desc())

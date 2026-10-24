@@ -3,8 +3,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import ProductCard from "@/components/ProductCard";
 import { categories, type Category } from "@/data/products";
-import { getCatalog } from "@/lib/catalog";
-import { getAllProductImages } from "@/lib/images";
+import { getCatalog, photoMap } from "@/lib/catalog";
 
 export const metadata: Metadata = {
   title: "Shop",
@@ -39,7 +38,7 @@ async function Filtered({ searchParams }: { searchParams: PageProps<"/shop">["se
 
 async function Grid({ category, sort }: { category?: Category; sort: string }) {
   const products = await getCatalog();
-  const images = await getAllProductImages(products.map((p) => p.slug));
+  const images = photoMap(products);
   let list = category ? products.filter((p) => p.category === category) : [...products];
   if (sort === "low") list.sort((a, b) => a.price - b.price);
   if (sort === "high") list.sort((a, b) => b.price - a.price);

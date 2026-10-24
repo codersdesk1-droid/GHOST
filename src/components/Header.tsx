@@ -3,7 +3,7 @@
 import { Show, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useCatalog } from "./cart/CatalogProvider";
+import { useCatalog, useShipping } from "./cart/CatalogProvider";
 import { cart, cartTotals, useCart } from "./cart/store";
 import { Wordmark } from "./Logo";
 
@@ -15,10 +15,10 @@ const NAV = [
   { href: "/faq", label: "FAQ" },
 ];
 
-export default function Header() {
+export default function Header({ announcement }: { announcement?: string }) {
   const { lines } = useCart();
   const find = useCatalog();
-  const { count } = cartTotals(lines, find);
+  const { count } = cartTotals(lines, find, useShipping());
   const [scrolled, setScrolled] = useState(false);
   const [menu, setMenu] = useState(false);
 
@@ -31,6 +31,9 @@ export default function Header() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-5 sm:pt-4">
+      {announcement && !scrolled && (
+        <p className="mb-2 text-center text-[0.7rem] tracking-[0.2em] text-bone/80 uppercase">{announcement}</p>
+      )}
       <div
         className={`mx-auto flex h-14 max-w-[1440px] items-center justify-between rounded-full px-5 transition-all duration-700 ease-ghost sm:px-7 ${
           scrolled || menu ? "glass" : "border border-transparent"

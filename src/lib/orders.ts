@@ -2,6 +2,7 @@ import "server-only";
 import { randomBytes } from "node:crypto";
 import type Stripe from "stripe";
 import { db } from "@/prisma/db";
+import { getSettings } from "./settings";
 
 export const ORDER_STATUSES = [
   "pending",
@@ -14,9 +15,6 @@ export const ORDER_STATUSES = [
   "needs_attention",
 ] as const;
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
-
-export const FREE_SHIPPING_CENTS = 15_000;
-export const SHIPPING_CENTS = 1_200;
 
 export type CheckoutLine = { slug: string; color: string; size: string; qty: number };
 
@@ -64,7 +62,8 @@ export async function createPendingOrder(lines: CheckoutLine[], customer: { cler
   });
 
   const subtotalCents = items.reduce((s, i) => s + i.unitPriceCents * i.quantity, 0);
-  const shippingCents = subtotalCents >= FREE_SHIPPING_CENTS ? 0 : SHIPPING_CENTS;
+  const settings = await getSettings();
+  const shippingCents = subtotalCents >= settings.freeShippingCents ? 0 : settings.shippingCents;
 
   const order = await db.transaction(async (tx) => {
     const o = await tx.orm.public.Order.create({
@@ -90,7 +89,8 @@ export async function createPendingOrder(lines: CheckoutLine[], customer: { cler
  * event can never take stock twice.
  */
 export async function fulfilSession(eventId: string, eventType: string, session: Stripe.Checkout.Session) {
-  return db.transaction(async (tx) => {
+  let lastFulfilledOrderId: number | null = null;
+  const result = await db.transaction(async (tx) => {
     if (await tx.orm.public.ProcessedEvent.first({ id: eventId })) return "duplicate-event";
 
     const order = await tx.orm.public.Order.where({ stripeSessionId: session.id }).forUpdate().first();
@@ -124,8 +124,10 @@ export async function fulfilSession(eventId: string, eventType: string, session:
       stripePaymentIntentId: typeof session.payment_intent === "string" ? session.payment_intent : null,
     });
     await tx.orm.public.ProcessedEvent.create({ id: eventId, type: eventType });
+    lastFulfilledOrderId = order.id;
     return oversold ? "needs-attention" : "paid";
   });
+  return { result, orderId: lastFulfilledOrderId };
 }
 
 /** Expired or failed sessions release the pending order. Paid orders are never touched. */

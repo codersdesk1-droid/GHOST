@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, type ReactNode } from "react";
-import { updateOrder, updateProduct, updateStock, type ActionState } from "@/app/admin/actions";
+import { updateOrder, updateStock, type ActionState } from "@/app/admin/actions";
 
 const field = "h-10 rounded-xl border border-line bg-white/[0.03] px-3 text-sm outline-none focus:border-bone/40";
 const button = "h-10 rounded-full bg-bone px-5 text-sm text-void transition hover:bg-white disabled:opacity-50";
@@ -18,44 +18,6 @@ function Label({ text, children }: { text: string; children: ReactNode }) {
       {text}
       {children}
     </label>
-  );
-}
-
-export function ProductForm({
-  product,
-}: {
-  product: { id: number; name: string; priceCents: number; compareAtCents: number | null; badge: string | null; active: boolean };
-}) {
-  const [state, action, pending] = useActionState(updateProduct, {});
-  return (
-    <form action={action} className="grid gap-3 sm:grid-cols-[2fr_1fr_1fr_1fr_auto] sm:items-end">
-      <input type="hidden" name="id" value={product.id} />
-      <Label text="Name">
-        <input name="name" defaultValue={product.name} className={field} required maxLength={80} />
-      </Label>
-      <Label text="Price ($)">
-        <input name="price" type="number" step="0.01" min="1" defaultValue={product.priceCents / 100} className={field} required />
-      </Label>
-      <Label text="Was ($, for sales)">
-        <input name="compareAt" type="number" step="0.01" min="0" defaultValue={product.compareAtCents != null ? product.compareAtCents / 100 : ""} className={field} />
-      </Label>
-      <Label text="Badge">
-        <select name="badge" defaultValue={product.badge ?? ""} className={field}>
-          <option value="">None</option>
-          <option>New</option>
-          <option>Best seller</option>
-          <option>Limited</option>
-        </select>
-      </Label>
-      <div className="flex items-center gap-4">
-        <label className="flex items-center gap-2 text-sm">
-          <input name="active" type="checkbox" defaultChecked={product.active} className="h-4 w-4 accent-[#d7d2c5]" />
-          On sale
-        </label>
-        <button className={button} disabled={pending}>{pending ? "Saving…" : "Save"}</button>
-      </div>
-      <div className="sm:col-span-5"><Status state={state} /></div>
-    </form>
   );
 }
 

@@ -7,6 +7,7 @@ const IMAGE_EXT = /\.(jpe?g|png|webp|avif)$/i;
 /**
  * Lists photos in public/<folder>/, sorted by name.
  * Returns public URLs, or [] when the folder doesn't exist yet.
+ * Uploaded photos live in Vercel Blob; this is the fallback for files in the repo.
  */
 export async function getImages(folder: string): Promise<string[]> {
   "use cache";
@@ -20,13 +21,4 @@ export async function getImages(folder: string): Promise<string[]> {
   } catch {
     return [];
   }
-}
-
-export function getProductImages(slug: string) {
-  return getImages(`products/${slug}`);
-}
-
-export async function getAllProductImages(slugs: string[]) {
-  const entries = await Promise.all(slugs.map(async (s) => [s, await getProductImages(s)] as const));
-  return Object.fromEntries(entries) as Record<string, string[]>;
 }

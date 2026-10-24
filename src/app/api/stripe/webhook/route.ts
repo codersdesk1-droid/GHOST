@@ -1,6 +1,8 @@
 import { revalidateTag } from "next/cache";
+import { after } from "next/server";
 import type Stripe from "stripe";
 import { CATALOG_TAG } from "@/lib/catalog";
+import { sendOrderConfirmation } from "@/lib/email";
 import { cancelSession, fulfilSession } from "@/lib/orders";
 import { stripe } from "@/lib/stripe";
 
@@ -27,8 +29,12 @@ export async function POST(req: Request) {
       const session = event.data.object;
       // Delayed payment methods complete while still unpaid; wait for async_payment_succeeded.
       if (session.payment_status === "unpaid") break;
-      const result = await fulfilSession(event.id, event.type, session);
-      if (result === "paid" || result === "needs-attention") revalidateTag(CATALOG_TAG, "max");
+      const { result, orderId } = await fulfilSession(event.id, event.type, session);
+      if (result === "paid" || result === "needs-attention") {
+        revalidateTag(CATALOG_TAG, "max");
+        // Email after responding, so Stripe gets its 200 straight away.
+        if (orderId !== null) after(() => sendOrderConfirmation(orderId).catch((e) => console.error("[email] confirmation", e)));
+      }
       break;
     }
     case "checkout.session.async_payment_failed":

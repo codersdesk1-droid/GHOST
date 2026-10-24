@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect } from "react";
 import { formatPrice } from "@/data/products";
-import { useCatalog } from "./CatalogProvider";
+import { useCatalog, useShipping } from "./CatalogProvider";
 import ProductVisual from "../ProductVisual";
 import { cart, cartTotals, useCart, type CartLine } from "./store";
 import { pickImage } from "./pickImage";
@@ -11,7 +11,8 @@ import { pickImage } from "./pickImage";
 export default function CartDrawer({ images }: { images: Record<string, string[]> }) {
   const { lines, open } = useCart();
   const find = useCatalog();
-  const totals = cartTotals(lines, find);
+  const rules = useShipping();
+  const totals = cartTotals(lines, find, rules);
 
   useEffect(() => {
     if (!open) return;
@@ -73,7 +74,7 @@ export default function CartDrawer({ images }: { images: Record<string, string[]
               <Row
                 label="Shipping"
                 value={totals.shipping === 0 ? "Free" : formatPrice(totals.shipping)}
-                hint={totals.shipping ? `Free over ${formatPrice(150)}` : undefined}
+                hint={totals.shipping ? `Free over ${formatPrice(rules.freeShippingCents / 100)}` : undefined}
               />
               <div className="flex items-baseline justify-between pt-2">
                 <span className="eyebrow">Total</span>

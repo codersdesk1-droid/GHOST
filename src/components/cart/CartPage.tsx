@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { formatPrice } from "@/data/products";
-import { useCatalog } from "./CatalogProvider";
+import { useCatalog, useShipping } from "./CatalogProvider";
 import ProductVisual from "../ProductVisual";
 import { Qty } from "./CartDrawer";
 import { pickImage } from "./pickImage";
@@ -12,7 +12,9 @@ import { cart, cartTotals, useCart } from "./store";
 export default function CartPage({ images }: { images: Record<string, string[]> }) {
   const { lines } = useCart();
   const find = useCatalog();
-  const t = cartTotals(lines, find);
+  const rules = useShipping();
+  const free = rules.freeShippingCents / 100;
+  const t = cartTotals(lines, find, rules);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -106,9 +108,9 @@ export default function CartPage({ images }: { images: Record<string, string[]> 
             {t.shipping > 0 && (
               <div className="mt-5">
                 <div className="h-1 overflow-hidden rounded-full bg-white/10">
-                  <div className="h-full rounded-full bg-bone transition-all duration-700" style={{ width: `${Math.min(100, (t.subtotal / 150) * 100)}%` }} />
+                  <div className="h-full rounded-full bg-bone transition-all duration-700" style={{ width: `${Math.min(100, (t.subtotal / free) * 100)}%` }} />
                 </div>
-                <p className="mt-2 text-xs text-mist">{formatPrice(150 - t.subtotal)} away from free shipping</p>
+                <p className="mt-2 text-xs text-mist">{formatPrice(free - t.subtotal)} away from free shipping</p>
               </div>
             )}
             <div className="mt-6 flex items-baseline justify-between border-t border-line pt-6">

@@ -1,0 +1,800 @@
+[
+  {
+    "id": "schema.public",
+    "label": "Create schema \"public\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [],
+    "execute": [
+      {
+        "description": "Create schema \"public\"",
+        "sql": "CREATE SCHEMA IF NOT EXISTS \"public\"",
+        "params": []
+      }
+    ],
+    "postcheck": []
+  },
+  {
+    "id": "table.Order",
+    "label": "Create table \"Order\"",
+    "summary": "Creates table \"Order\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Order"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Order\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Order\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"Order\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Order\"",
+        "sql": "CREATE TABLE \"public\".\"Order\" (\n  \"clerkUserId\" text,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"currency\" text DEFAULT 'usd' NOT NULL,\n  \"email\" text,\n  \"id\" SERIAL NOT NULL,\n  \"number\" text NOT NULL,\n  \"shippingAddress\" text,\n  \"shippingCents\" int4 NOT NULL,\n  \"shippingName\" text,\n  \"status\" text DEFAULT 'pending' NOT NULL,\n  \"stripePaymentIntentId\" text,\n  \"stripeSessionId\" text,\n  \"subtotalCents\" int4 NOT NULL,\n  \"totalCents\" int4 NOT NULL,\n  \"trackingNumber\" text,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Order\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3))) AS \"result\"",
+        "params": [
+          "\"public\".\"Order\"",
+          "r",
+          "p"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"Order\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "table.OrderItem",
+    "label": "Create table \"OrderItem\"",
+    "summary": "Creates table \"OrderItem\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "OrderItem"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"OrderItem\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"OrderItem\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"OrderItem\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"OrderItem\"",
+        "sql": "CREATE TABLE \"public\".\"OrderItem\" (\n  \"color\" text NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"orderId\" int4 NOT NULL,\n  \"productName\" text NOT NULL,\n  \"productSlug\" text NOT NULL,\n  \"quantity\" int4 NOT NULL,\n  \"size\" text NOT NULL,\n  \"sku\" text NOT NULL,\n  \"unitPriceCents\" int4 NOT NULL,\n  \"variantId\" int4 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"OrderItem\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3))) AS \"result\"",
+        "params": [
+          "\"public\".\"OrderItem\"",
+          "r",
+          "p"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"OrderItem\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "table.ProcessedEvent",
+    "label": "Create table \"ProcessedEvent\"",
+    "summary": "Creates table \"ProcessedEvent\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "ProcessedEvent"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"ProcessedEvent\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"ProcessedEvent\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"ProcessedEvent\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"ProcessedEvent\"",
+        "sql": "CREATE TABLE \"public\".\"ProcessedEvent\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" text NOT NULL,\n  \"type\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"ProcessedEvent\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3))) AS \"result\"",
+        "params": [
+          "\"public\".\"ProcessedEvent\"",
+          "r",
+          "p"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"ProcessedEvent\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "table.Product",
+    "label": "Create table \"Product\"",
+    "summary": "Creates table \"Product\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Product"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Product\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Product\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"Product\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Product\"",
+        "sql": "CREATE TABLE \"public\".\"Product\" (\n  \"active\" bool DEFAULT true NOT NULL,\n  \"badge\" text,\n  \"compareAtCents\" int4,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"name\" text NOT NULL,\n  \"priceCents\" int4 NOT NULL,\n  \"slug\" text NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Product\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3))) AS \"result\"",
+        "params": [
+          "\"public\".\"Product\"",
+          "r",
+          "p"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"Product\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "table.Variant",
+    "label": "Create table \"Variant\"",
+    "summary": "Creates table \"Variant\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Variant"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Variant\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Variant\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"Variant\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Variant\"",
+        "sql": "CREATE TABLE \"public\".\"Variant\" (\n  \"color\" text NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"productId\" int4 NOT NULL,\n  \"size\" text NOT NULL,\n  \"sku\" text NOT NULL,\n  \"stock\" int4 DEFAULT 0 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Variant\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3))) AS \"result\"",
+        "params": [
+          "\"public\".\"Variant\"",
+          "r",
+          "p"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"Variant\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "unique.Order.Order_number_key",
+    "label": "Add unique constraint on \"Order\" (number)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "Order_number_key",
+        "table": "Order"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"Order_number_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Order_number_key",
+          "public",
+          "\"public\".\"Order\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "constraint \"Order_number_key\" on \"Order\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"Order_number_key\"",
+        "sql": "ALTER TABLE \"public\".\"Order\" ADD CONSTRAINT \"Order_number_key\" UNIQUE (\"number\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify unique constraint \"Order_number_key\" exists on (number)",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb)) AS \"result\"",
+        "params": [
+          "Order_number_key",
+          "public",
+          "\"public\".\"Order\"",
+          "u",
+          "[\"number\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.Order.Order_stripeSessionId_key",
+    "label": "Add unique constraint on \"Order\" (stripeSessionId)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "Order_stripeSessionId_key",
+        "table": "Order"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"Order_stripeSessionId_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Order_stripeSessionId_key",
+          "public",
+          "\"public\".\"Order\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "constraint \"Order_stripeSessionId_key\" on \"Order\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"Order_stripeSessionId_key\"",
+        "sql": "ALTER TABLE \"public\".\"Order\" ADD CONSTRAINT \"Order_stripeSessionId_key\" UNIQUE (\"stripeSessionId\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify unique constraint \"Order_stripeSessionId_key\" exists on (stripeSessionId)",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb)) AS \"result\"",
+        "params": [
+          "Order_stripeSessionId_key",
+          "public",
+          "\"public\".\"Order\"",
+          "u",
+          "[\"stripeSessionId\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.Product.Product_slug_key",
+    "label": "Add unique constraint on \"Product\" (slug)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "Product_slug_key",
+        "table": "Product"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"Product_slug_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Product_slug_key",
+          "public",
+          "\"public\".\"Product\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "constraint \"Product_slug_key\" on \"Product\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"Product_slug_key\"",
+        "sql": "ALTER TABLE \"public\".\"Product\" ADD CONSTRAINT \"Product_slug_key\" UNIQUE (\"slug\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify unique constraint \"Product_slug_key\" exists on (slug)",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb)) AS \"result\"",
+        "params": [
+          "Product_slug_key",
+          "public",
+          "\"public\".\"Product\"",
+          "u",
+          "[\"slug\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.Variant.Variant_sku_key",
+    "label": "Add unique constraint on \"Variant\" (sku)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "Variant_sku_key",
+        "table": "Variant"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"Variant_sku_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Variant_sku_key",
+          "public",
+          "\"public\".\"Variant\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "constraint \"Variant_sku_key\" on \"Variant\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"Variant_sku_key\"",
+        "sql": "ALTER TABLE \"public\".\"Variant\" ADD CONSTRAINT \"Variant_sku_key\" UNIQUE (\"sku\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify unique constraint \"Variant_sku_key\" exists on (sku)",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb)) AS \"result\"",
+        "params": [
+          "Variant_sku_key",
+          "public",
+          "\"public\".\"Variant\"",
+          "u",
+          "[\"sku\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.Variant.Variant_productId_color_size_key",
+    "label": "Add unique constraint on \"Variant\" (productId, color, size)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "Variant_productId_color_size_key",
+        "table": "Variant"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"Variant_productId_color_size_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Variant_productId_color_size_key",
+          "public",
+          "\"public\".\"Variant\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "constraint \"Variant_productId_color_size_key\" on \"Variant\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"Variant_productId_color_size_key\"",
+        "sql": "ALTER TABLE \"public\".\"Variant\" ADD CONSTRAINT \"Variant_productId_color_size_key\" UNIQUE (\"productId\", \"color\", \"size\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify unique constraint \"Variant_productId_color_size_key\" exists on (productId, color, size)",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb)) AS \"result\"",
+        "params": [
+          "Variant_productId_color_size_key",
+          "public",
+          "\"public\".\"Variant\"",
+          "u",
+          "[\"productId\",\"color\",\"size\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Order.Order_clerkUserId_idx_17dc593a",
+    "label": "Create index \"Order_clerkUserId_idx_17dc593a\" on \"Order\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Order_clerkUserId_idx_17dc593a",
+        "table": "Order"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Order_clerkUserId_idx_17dc593a\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Order_clerkUserId_idx_17dc593a\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"Order_clerkUserId_idx_17dc593a\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Order_clerkUserId_idx_17dc593a\"",
+        "sql": "CREATE INDEX \"Order_clerkUserId_idx_17dc593a\" ON \"public\".\"Order\" (\"clerkUserId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Order_clerkUserId_idx_17dc593a\" exists on \"Order\" with the planned definition",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_index\" AS \"i\" ON \"i\".\"indexrelid\" = \"c\".\"oid\" INNER JOIN \"pg_am\" AS \"m\" ON \"m\".\"oid\" = \"c\".\"relam\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3) AND \"i\".\"indrelid\" = to_regclass($4) AND NOT (\"i\".\"indisunique\") AND \"m\".\"amname\" = $5 AND (\"i\".\"indexprs\" IS NULL AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"i\".\"indkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"i\".\"indrelid\" AND key_attribute.attnum = key_column.attnum) = ($6)::jsonb) AND \"i\".\"indpred\" IS NULL)) AS \"result\"",
+        "params": [
+          "\"public\".\"Order_clerkUserId_idx_17dc593a\"",
+          "i",
+          "I",
+          "\"public\".\"Order\"",
+          "btree",
+          "[\"clerkUserId\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Order.Order_status_idx_e98638ab",
+    "label": "Create index \"Order_status_idx_e98638ab\" on \"Order\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Order_status_idx_e98638ab",
+        "table": "Order"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Order_status_idx_e98638ab\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Order_status_idx_e98638ab\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"Order_status_idx_e98638ab\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Order_status_idx_e98638ab\"",
+        "sql": "CREATE INDEX \"Order_status_idx_e98638ab\" ON \"public\".\"Order\" (\"status\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Order_status_idx_e98638ab\" exists on \"Order\" with the planned definition",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_index\" AS \"i\" ON \"i\".\"indexrelid\" = \"c\".\"oid\" INNER JOIN \"pg_am\" AS \"m\" ON \"m\".\"oid\" = \"c\".\"relam\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3) AND \"i\".\"indrelid\" = to_regclass($4) AND NOT (\"i\".\"indisunique\") AND \"m\".\"amname\" = $5 AND (\"i\".\"indexprs\" IS NULL AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"i\".\"indkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"i\".\"indrelid\" AND key_attribute.attnum = key_column.attnum) = ($6)::jsonb) AND \"i\".\"indpred\" IS NULL)) AS \"result\"",
+        "params": [
+          "\"public\".\"Order_status_idx_e98638ab\"",
+          "i",
+          "I",
+          "\"public\".\"Order\"",
+          "btree",
+          "[\"status\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.OrderItem.OrderItem_orderId_idx_d284871b",
+    "label": "Create index \"OrderItem_orderId_idx_d284871b\" on \"OrderItem\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "OrderItem_orderId_idx_d284871b",
+        "table": "OrderItem"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"OrderItem_orderId_idx_d284871b\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"OrderItem_orderId_idx_d284871b\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"OrderItem_orderId_idx_d284871b\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"OrderItem_orderId_idx_d284871b\"",
+        "sql": "CREATE INDEX \"OrderItem_orderId_idx_d284871b\" ON \"public\".\"OrderItem\" (\"orderId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"OrderItem_orderId_idx_d284871b\" exists on \"OrderItem\" with the planned definition",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_index\" AS \"i\" ON \"i\".\"indexrelid\" = \"c\".\"oid\" INNER JOIN \"pg_am\" AS \"m\" ON \"m\".\"oid\" = \"c\".\"relam\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3) AND \"i\".\"indrelid\" = to_regclass($4) AND NOT (\"i\".\"indisunique\") AND \"m\".\"amname\" = $5 AND (\"i\".\"indexprs\" IS NULL AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"i\".\"indkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"i\".\"indrelid\" AND key_attribute.attnum = key_column.attnum) = ($6)::jsonb) AND \"i\".\"indpred\" IS NULL)) AS \"result\"",
+        "params": [
+          "\"public\".\"OrderItem_orderId_idx_d284871b\"",
+          "i",
+          "I",
+          "\"public\".\"OrderItem\"",
+          "btree",
+          "[\"orderId\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Variant.Variant_productId_idx_5858600a",
+    "label": "Create index \"Variant_productId_idx_5858600a\" on \"Variant\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Variant_productId_idx_5858600a",
+        "table": "Variant"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Variant_productId_idx_5858600a\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Variant_productId_idx_5858600a\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"Variant_productId_idx_5858600a\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Variant_productId_idx_5858600a\"",
+        "sql": "CREATE INDEX \"Variant_productId_idx_5858600a\" ON \"public\".\"Variant\" (\"productId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Variant_productId_idx_5858600a\" exists on \"Variant\" with the planned definition",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_index\" AS \"i\" ON \"i\".\"indexrelid\" = \"c\".\"oid\" INNER JOIN \"pg_am\" AS \"m\" ON \"m\".\"oid\" = \"c\".\"relam\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3) AND \"i\".\"indrelid\" = to_regclass($4) AND NOT (\"i\".\"indisunique\") AND \"m\".\"amname\" = $5 AND (\"i\".\"indexprs\" IS NULL AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"i\".\"indkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"i\".\"indrelid\" AND key_attribute.attnum = key_column.attnum) = ($6)::jsonb) AND \"i\".\"indpred\" IS NULL)) AS \"result\"",
+        "params": [
+          "\"public\".\"Variant_productId_idx_5858600a\"",
+          "i",
+          "I",
+          "\"public\".\"Variant\"",
+          "btree",
+          "[\"productId\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.OrderItem.OrderItem_orderId_fkey",
+    "label": "Add foreign key \"OrderItem_orderId_fkey\" on \"OrderItem\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "OrderItem_orderId_fkey",
+        "table": "OrderItem"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"OrderItem_orderId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "OrderItem_orderId_fkey",
+          "public",
+          "\"public\".\"OrderItem\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "FK \"OrderItem_orderId_fkey\" on \"OrderItem\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"OrderItem_orderId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"OrderItem\"\nADD CONSTRAINT \"OrderItem_orderId_fkey\"\nFOREIGN KEY (\"orderId\")\nREFERENCES \"public\".\"Order\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"OrderItem_orderId_fkey\" exists with the planned columns, referenced table and actions",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb AND \"c\".\"confrelid\" = to_regclass($6) AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"confkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"confrelid\" AND key_attribute.attnum = key_column.attnum) = ($7)::jsonb AND \"c\".\"confdeltype\" = $8 AND \"c\".\"confupdtype\" = $9)) AS \"result\"",
+        "params": [
+          "OrderItem_orderId_fkey",
+          "public",
+          "\"public\".\"OrderItem\"",
+          "f",
+          "[\"orderId\"]",
+          "\"public\".\"Order\"",
+          "[\"id\"]",
+          "c",
+          "a"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.Variant.Variant_productId_fkey",
+    "label": "Add foreign key \"Variant_productId_fkey\" on \"Variant\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "Variant_productId_fkey",
+        "table": "Variant"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"Variant_productId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Variant_productId_fkey",
+          "public",
+          "\"public\".\"Variant\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "FK \"Variant_productId_fkey\" on \"Variant\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"Variant_productId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"Variant\"\nADD CONSTRAINT \"Variant_productId_fkey\"\nFOREIGN KEY (\"productId\")\nREFERENCES \"public\".\"Product\" (\"id\")\nON DELETE CASCADE"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"Variant_productId_fkey\" exists with the planned columns, referenced table and actions",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb AND \"c\".\"confrelid\" = to_regclass($6) AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"confkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"confrelid\" AND key_attribute.attnum = key_column.attnum) = ($7)::jsonb AND \"c\".\"confdeltype\" = $8 AND \"c\".\"confupdtype\" = $9)) AS \"result\"",
+        "params": [
+          "Variant_productId_fkey",
+          "public",
+          "\"public\".\"Variant\"",
+          "f",
+          "[\"productId\"]",
+          "\"public\".\"Product\"",
+          "[\"id\"]",
+          "c",
+          "a"
+        ]
+      }
+    ]
+  }
+]

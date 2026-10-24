@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
+import { getRole } from "@/lib/auth";
 import { formatCents } from "@/lib/orders";
 import { db } from "@/prisma/db";
 
@@ -34,6 +35,13 @@ async function Orders() {
   const { isAuthenticated, userId, redirectToSignIn } = await auth();
   if (!isAuthenticated) return redirectToSignIn();
 
+  const role = await getRole();
+  const adminLink = role && (
+    <Link href="/admin" className="mt-8 inline-flex rounded-full border border-line px-6 py-3 text-sm transition hover:border-bone/40">
+      Store admin ({role}) →
+    </Link>
+  );
+
   const orders = await db.orm.public.Order.where({ clerkUserId: userId })
     .where((o) => o.status.neq("pending"))
     .include("items")
@@ -46,11 +54,14 @@ async function Orders() {
       <div className="mt-12">
         <p className="text-mist">No orders yet. Your first piece is waiting.</p>
         <Link href="/shop" className="mt-8 inline-flex rounded-full bg-bone px-8 py-4 text-void">Browse the drop</Link>
+        <div>{adminLink}</div>
       </div>
     );
   }
 
   return (
+    <>
+    {adminLink}
     <ul className="mt-12 space-y-4">
       {orders.map((o) => (
         <li key={o.id} className="glass rounded-[28px] p-6 sm:p-8">
@@ -78,5 +89,6 @@ async function Orders() {
         </li>
       ))}
     </ul>
+    </>
   );
 }

@@ -1,8 +1,8 @@
 // use prisma-8
 
-// Commerce data that changes at runtime: prices, stock and orders.
-// Editorial copy (descriptions, meters, care) stays in src/data/products.ts;
-// `npm run db:seed` syncs new products and variants from that file.
+// Everything the store owner edits from /admin lives here: products, photos,
+// stock, orders, store settings and staff. src/data/products.ts is only the
+// starting catalog that `npm run db:seed` loads into an empty database.
 
 model Product {
   id             Int                          @id @default(autoincrement())
@@ -12,9 +12,63 @@ model Product {
   compareAtCents Int?
   badge          String?
   active         Boolean                      @default(true)
+  category       String                       @default("tees")
+  tagline        String                       @default("")
+  description    String                       @default("")
+  fabric         String                       @default("")
+  gsm            Int                          @default(0)
+  fit            String                       @default("")
+  // one bullet per line
+  details        String                       @default("")
+  care           String                       @default("")
+  // comma separated, in display order, e.g. "S,M,L,XL"
+  sizes          String                       @default("")
+  position       Int                          @default(0)
   variants       Variant[]
+  colors         ProductColor[]
+  meters         ProductMeter[]
+  images         ProductImage[]
   createdAt      TimestamptzString            @default(now())
   updatedAt      temporal.updatedAtString()
+}
+
+model ProductColor {
+  id        Int     @id @default(autoincrement())
+  productId Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name      String
+  hex       String
+  position  Int     @default(0)
+
+  @@index([productId])
+}
+
+// The 0 to 4 quality ratings on the product page (Weight, Softness, ...)
+model ProductMeter {
+  id        Int     @id @default(autoincrement())
+  productId Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  label     String
+  value     Int
+  note      String  @default("")
+  position  Int     @default(0)
+
+  @@index([productId])
+}
+
+model ProductImage {
+  id        Int               @id @default(autoincrement())
+  productId Int
+  product   Product           @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  pathname  String
+  // colour name this photo belongs to; null shows for every colour
+  color     String?
+  alt       String            @default("")
+  position  Int               @default(0)
+  createdAt TimestamptzString @default(now())
+
+  @@index([productId])
 }
 
 model Variant {
@@ -46,6 +100,8 @@ model Order {
   shippingName          String?
   shippingAddress       String?
   trackingNumber        String?
+  confirmationEmailAt   TimestamptzString?
+  shippedEmailAt        TimestamptzString?
   items                 OrderItem[]
   createdAt             TimestamptzString            @default(now())
   updatedAt             temporal.updatedAtString()
@@ -74,5 +130,32 @@ model OrderItem {
 model ProcessedEvent {
   id        String            @id
   type      String
+  createdAt TimestamptzString @default(now())
+}
+
+// One row (id 1): the business details the owner edits in /admin/settings.
+model StoreSettings {
+  id                Int                        @id
+  storeName         String                     @default("Ghost")
+  tagline           String                     @default("Wear a vision")
+  contactEmail      String                     @default("")
+  instagram         String                     @default("")
+  announcement      String                     @default("")
+  shippingCents     Int                        @default(1200)
+  freeShippingCents Int                        @default(15000)
+  policyShipping    String                     @default("")
+  policyReturns     String                     @default("")
+  policyPrivacy     String                     @default("")
+  policyTerms       String                     @default("")
+  policyContact     String                     @default("")
+  updatedAt         temporal.updatedAtString()
+}
+
+// People allowed into /admin. "owner" also manages settings and staff.
+// Emails in the ADMIN_EMAILS env var are always owners.
+model StaffMember {
+  id        Int               @id @default(autoincrement())
+  email     String            @unique
+  role      String            @default("staff")
   createdAt TimestamptzString @default(now())
 }

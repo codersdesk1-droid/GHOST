@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Sparkle, Wordmark } from "./Logo";
 import Newsletter from "./Newsletter";
+import { getSettings } from "@/lib/settings";
 
 const COLS = [
   {
@@ -32,7 +33,8 @@ const COLS = [
   },
 ];
 
-export default function Footer() {
+export default async function Footer() {
+  const s = await getSettings();
   return (
     <footer className="relative mt-32 overflow-hidden border-t border-line px-5 pt-20 pb-8 sm:px-10">
       <div className="mx-auto grid max-w-[1440px] gap-14 lg:grid-cols-[1.3fr_2fr]">
@@ -67,8 +69,21 @@ export default function Footer() {
         <Wordmark className="w-full" />
       </div>
       <div className="mx-auto mt-6 flex max-w-[1440px] flex-wrap justify-between gap-3 text-xs text-fog">
-        <p>© 2026 Ghost™. Wear a vision.</p>
-        <p>Made in small batches.</p>
+        <p>
+          © 2026 {s.storeName}™. {s.tagline}.
+        </p>
+        <p className="flex gap-4">
+          {s.contactEmail && (
+            <a href={`mailto:${s.contactEmail}`} className="hover:text-bone">
+              {s.contactEmail}
+            </a>
+          )}
+          {s.instagram && (
+            <a href={`https://instagram.com/${s.instagram.replace(/^@/, "")}`} className="hover:text-bone" target="_blank" rel="noreferrer">
+              @{s.instagram.replace(/^@/, "")}
+            </a>
+          )}
+        </p>
       </div>
     </footer>
   );

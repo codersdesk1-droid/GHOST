@@ -14,11 +14,13 @@
   "dependencies": {
     "@clerk/nextjs": "7.9.20",
     "@prisma/orm-postgres": "8.0.0-rc.20",
+    "@vercel/blob": "2.8.2",
     "dotenv": "18.0.9",
     "next": "16.4.3",
     "pg": "8.22.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
+    "resend": "6.34.1",
     "server-only": "^0.0.1",
     "stripe": "23.0.1"
   },
