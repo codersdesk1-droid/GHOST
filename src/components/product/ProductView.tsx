@@ -1,31 +1,26 @@
 "use client";
 
-import Link from "next/link";
 import { useMemo, useState } from "react";
 import { formatPrice, type Product } from "@/data/products";
 import type { CatalogProduct } from "@/lib/catalog";
 import { cart } from "../cart/store";
 import { imagesForColor } from "../cart/pickImage";
-import ProductVisual from "../ProductVisual";
+import ProductGallery, { type Shot } from "./ProductGallery";
 import SizeChart from "./SizeChart";
 
 export default function ProductView({ product: p, images }: { product: CatalogProduct; images: string[] }) {
   const [color, setColor] = useState(p.colors[0]);
   const [size, setSize] = useState<string | null>(null);
-  const [view, setView] = useState(0);
-  const [zoom, setZoom] = useState<{ x: number; y: number } | null>(null);
   const [chart, setChart] = useState(false);
   const [more, setMore] = useState(false);
   const [nudge, setNudge] = useState(false);
   const [added, setAdded] = useState(false);
 
-  // Real photos for this colour, or three placeholder "views"
-  const shots = useMemo(() => {
+  // Real photos for this colour, or three placeholder views of the drawn garment
+  const shots = useMemo<Shot[]>(() => {
     const own = imagesForColor(images, color.name);
-    return own.length ? own : [undefined, "detail", "back"];
+    return own.length ? own : ["front", "detail", "back"];
   }, [images, color.name]);
-  const current = shots[Math.min(view, shots.length - 1)];
-  const isPhoto = typeof current === "string" && current.startsWith("/");
 
   const left = size ? (p.stock[`${color.name}|${size}`] ?? 0) : 0;
 
@@ -42,51 +37,18 @@ export default function ProductView({ product: p, images }: { product: CatalogPr
 
   return (
     <div className="mx-auto grid max-w-[1440px] gap-6 px-3 pt-24 sm:px-6 lg:grid-cols-[1.35fr_1fr] lg:gap-10 lg:px-10">
-      {/* gallery */}
+      {/* gallery: remounts per colour so it starts on the first view */}
       <div className="lg:sticky lg:top-24 lg:self-start">
-        <div
-          className="relative aspect-[4/5] cursor-zoom-in overflow-hidden rounded-[32px] bg-gradient-to-b from-smoke to-void ring-1 ring-line lg:aspect-[5/5.4]"
-          onMouseMove={(e) => {
-            const r = e.currentTarget.getBoundingClientRect();
-            setZoom({ x: ((e.clientX - r.left) / r.width) * 100, y: ((e.clientY - r.top) / r.height) * 100 });
-          }}
-          onMouseLeave={() => setZoom(null)}
-        >
-          <div
-            key={`${color.name}-${view}`}
-            className="absolute inset-0 animate-[rise_0.8s_var(--ease-ghost)_both] transition-transform duration-300 ease-out"
-            style={{
-              transform: zoom ? "scale(1.8)" : current === "detail" ? "scale(2.2)" : current === "back" ? "scaleX(-1)" : undefined,
-              transformOrigin: zoom ? `${zoom.x}% ${zoom.y}%` : current === "detail" ? "50% 30%" : "center",
-            }}
-          >
-            <ProductVisual
-              src={isPhoto ? current : undefined}
-              alt={`${p.name} in ${color.name}`}
-              category={p.category}
-              color={color.hex}
-              id={`pdp-${p.slug}`}
-              priority
-              sizes="(max-width: 1024px) 100vw, 55vw"
-            />
-          </div>
-          <Link href="/shop" className="glass absolute top-4 left-4 grid h-11 w-11 place-items-center rounded-full" aria-label="Back to shop">
-            ←
-          </Link>
-          {p.badge && (
-            <span className="glass absolute top-4 right-4 rounded-full px-4 py-2 text-[0.65rem] tracking-[0.2em] uppercase">{p.badge}</span>
-          )}
-          <div className="absolute inset-x-0 bottom-4 flex justify-center gap-2">
-            {shots.map((s, n) => (
-              <button
-                key={`${s}-${n}`}
-                onClick={() => setView(n)}
-                aria-label={`View ${n + 1}`}
-                className={`h-1.5 rounded-full bg-bone transition-all duration-500 ${n === view ? "w-8" : "w-1.5 opacity-40"}`}
-              />
-            ))}
-          </div>
-        </div>
+        <ProductGallery
+          key={color.name}
+          shots={shots}
+          name={p.name}
+          colorName={color.name}
+          colorHex={color.hex}
+          category={p.category}
+          slug={p.slug}
+          badge={p.badge}
+        />
       </div>
 
       {/* glass spec panel */}
@@ -112,7 +74,6 @@ export default function ProductView({ product: p, images }: { product: CatalogPr
                   key={c.name}
                   onClick={() => {
                     setColor(c);
-                    setView(0);
                     if (size && (p.stock[`${c.name}|${size}`] ?? 0) <= 0) setSize(null);
                   }}
                   aria-label={c.name}
