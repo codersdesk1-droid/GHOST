@@ -6,7 +6,7 @@ import FogHero from "@/components/home/FogHero";
 import { Sparkle } from "@/components/Logo";
 import ProductCard from "@/components/ProductCard";
 import Reveal from "@/components/Reveal";
-import { products } from "@/data/products";
+import { getCatalog } from "@/lib/catalog";
 import { getAllProductImages } from "@/lib/images";
 
 const STATS = [
@@ -17,6 +17,7 @@ const STATS = [
 ];
 
 export default async function Home() {
+  const products = await getCatalog();
   const images = await getAllProductImages(products.map((p) => p.slug));
   const bestSellers = products.filter((p) => p.badge === "Best seller");
 

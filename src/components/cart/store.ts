@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { getProduct } from "@/data/products";
+import type { CatalogProduct } from "@/lib/catalog";
 
 export type CartLine = { slug: string; color: string; size: string; qty: number };
 
@@ -26,8 +26,7 @@ function hydrate() {
   hydrated = true;
   try {
     const raw = localStorage.getItem(KEY);
-    // Drop anything that no longer exists in the catalog
-    const lines = (raw ? (JSON.parse(raw) as CartLine[]) : []).filter((l) => getProduct(l.slug));
+    const lines = raw ? (JSON.parse(raw) as CartLine[]) : [];
     state = { ...state, lines };
   } catch {}
 }
@@ -62,6 +61,9 @@ export const cart = {
   setOpen(open: boolean) {
     emit({ ...state, open });
   },
+  clear() {
+    emit({ lines: [], open: false });
+  },
 };
 
 export function useCart() {
@@ -72,9 +74,11 @@ export function useCart() {
   );
 }
 
-export function cartTotals(lines: CartLine[]) {
-  const subtotal = lines.reduce((sum, l) => sum + (getProduct(l.slug)?.price ?? 0) * l.qty, 0);
-  const count = lines.reduce((n, l) => n + l.qty, 0);
+/** Display totals only. The server recomputes everything from the database at checkout. */
+export function cartTotals(lines: CartLine[], find: (slug: string) => CatalogProduct | undefined) {
+  const live = lines.filter((l) => find(l.slug));
+  const subtotal = live.reduce((sum, l) => sum + (find(l.slug)?.price ?? 0) * l.qty, 0);
+  const count = live.reduce((n, l) => n + l.qty, 0);
   const shipping = subtotal === 0 || subtotal >= 150 ? 0 : 12;
   return { subtotal, count, shipping, total: subtotal + shipping };
 }

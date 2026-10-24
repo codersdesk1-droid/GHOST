@@ -3,7 +3,9 @@ import { Fraunces, IBM_Plex_Mono, Jost } from "next/font/google";
 import CartDrawer from "@/components/cart/CartDrawer";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
-import { products } from "@/data/products";
+import { ClerkProvider } from "@clerk/nextjs";
+import { CatalogProvider } from "@/components/cart/CatalogProvider";
+import { getCatalog } from "@/lib/catalog";
 import { getAllProductImages } from "@/lib/images";
 import "./globals.css";
 
@@ -38,11 +40,30 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
-  const images = await getAllProductImages(products.map((p) => p.slug));
+  const catalog = await getCatalog();
+  const images = await getAllProductImages(catalog.map((p) => p.slug));
   return (
     <html lang="en" className={`${fraunces.variable} ${jost.variable} ${plexMono.variable} antialiased`}>
       <body className="flex min-h-dvh flex-col">
-        <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[80] focus:rounded-full focus:bg-bone focus:px-4 focus:py-2 focus:text-void">
+        <ClerkProvider
+          appearance={{
+            variables: {
+              colorPrimary: "#d7d2c5",
+              colorPrimaryForeground: "#0d1010",
+              colorBackground: "#151a1a",
+              colorForeground: "#d7d2c5",
+              colorMutedForeground: "#8d918c",
+              colorInput: "#1b2020",
+              colorInputForeground: "#d7d2c5",
+              colorBorder: "rgb(215 210 197 / 0.14)",
+              colorNeutral: "#d7d2c5",
+              fontFamily: "var(--font-jost)",
+              borderRadius: "14px",
+            },
+          }}
+        >
+        <CatalogProvider products={catalog}>
+          <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[80] focus:rounded-full focus:bg-bone focus:px-4 focus:py-2 focus:text-void">
           Skip to content
         </a>
         <Header />
@@ -51,6 +72,8 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         </main>
         <Footer />
         <CartDrawer images={images} />
+        </CatalogProvider>
+        </ClerkProvider>
       </body>
     </html>
   );

@@ -6,21 +6,32 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "contract:emit": "prisma contract emit",
+    "db:seed": "node scripts/seed.ts",
+    "prebuild": "prisma contract emit"
   },
   "dependencies": {
+    "@clerk/nextjs": "7.9.20",
+    "@prisma/orm-postgres": "8.0.0-rc.20",
+    "dotenv": "18.0.9",
     "next": "16.4.3",
+    "pg": "8.22.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
-    "server-only": "^0.0.1"
+    "server-only": "^0.0.1",
+    "stripe": "23.0.1"
   },
   "devDependencies": {
+    "@prisma/cli-engine": "0.9.0",
     "@tailwindcss/turbopack": "^4",
     "@types/node": "^20",
+    "@types/pg": "8.20.4",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.4.3",
+    "prisma": "8.0.0-rc.27",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

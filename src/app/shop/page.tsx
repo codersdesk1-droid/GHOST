@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import ProductCard from "@/components/ProductCard";
-import { categories, products, type Category } from "@/data/products";
+import { categories, type Category } from "@/data/products";
+import { getCatalog } from "@/lib/catalog";
 import { getAllProductImages } from "@/lib/images";
 
 export const metadata: Metadata = {
@@ -20,7 +21,7 @@ const SORTS = [
 export default function ShopPage(props: PageProps<"/shop">) {
   return (
     <div className="mx-auto max-w-[1440px] px-5 pt-36 sm:px-10">
-      <p className="eyebrow">Drop 01 · {products.length} pieces</p>
+      <p className="eyebrow">Drop 01 · AW26</p>
       <h1 className="mt-4 font-display text-[clamp(3rem,8vw,7rem)] leading-none font-light">The collection</h1>
       <Suspense fallback={<Grid category={undefined} sort="featured" />}>
         <Filtered searchParams={props.searchParams} />
@@ -37,6 +38,7 @@ async function Filtered({ searchParams }: { searchParams: PageProps<"/shop">["se
 }
 
 async function Grid({ category, sort }: { category?: Category; sort: string }) {
+  const products = await getCatalog();
   const images = await getAllProductImages(products.map((p) => p.slug));
   let list = category ? products.filter((p) => p.category === category) : [...products];
   if (sort === "low") list.sort((a, b) => a.price - b.price);

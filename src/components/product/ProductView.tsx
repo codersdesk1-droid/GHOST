@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { formatPrice, type Product } from "@/data/products";
+import type { CatalogProduct } from "@/lib/catalog";
 import { cart } from "../cart/store";
 import { imagesForColor } from "../cart/pickImage";
 import ProductVisual from "../ProductVisual";
 import SizeChart from "./SizeChart";
 
-export default function ProductView({ product: p, images }: { product: Product; images: string[] }) {
+export default function ProductView({ product: p, images }: { product: CatalogProduct; images: string[] }) {
   const [color, setColor] = useState(p.colors[0]);
   const [size, setSize] = useState<string | null>(null);
   const [view, setView] = useState(0);
@@ -25,6 +26,8 @@ export default function ProductView({ product: p, images }: { product: Product; 
   }, [images, color.name]);
   const current = shots[Math.min(view, shots.length - 1)];
   const isPhoto = typeof current === "string" && current.startsWith("/");
+
+  const left = size ? (p.stock[`${color.name}|${size}`] ?? 0) : 0;
 
   function add() {
     if (!size) {
@@ -110,6 +113,7 @@ export default function ProductView({ product: p, images }: { product: Product; 
                   onClick={() => {
                     setColor(c);
                     setView(0);
+                    if (size && (p.stock[`${c.name}|${size}`] ?? 0) <= 0) setSize(null);
                   }}
                   aria-label={c.name}
                   aria-pressed={c.name === color.name}
@@ -133,7 +137,7 @@ export default function ProductView({ product: p, images }: { product: Product; 
             </div>
             <div className="mt-3 flex flex-wrap gap-2" role="radiogroup" aria-label="Size">
               {p.sizes.map((s) => {
-                const out = p.soldOut?.includes(s);
+                const out = (p.stock[`${color.name}|${s}`] ?? 0) <= 0;
                 const on = size === s;
                 return (
                   <button
@@ -151,7 +155,10 @@ export default function ProductView({ product: p, images }: { product: Product; 
                 );
               })}
             </div>
-            <p className="mt-3 text-xs text-mist">{p.fit}</p>
+            <p className="mt-3 text-xs text-mist">
+              {size && left > 0 && left <= 3 ? `Only ${left} left in ${color.name}, size ${size}. ` : ""}
+              {p.fit}
+            </p>
           </div>
 
           <div className="mt-8 flex items-center justify-between gap-4">

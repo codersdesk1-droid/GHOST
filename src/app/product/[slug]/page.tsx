@@ -3,16 +3,17 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import ProductCard from "@/components/ProductCard";
 import ProductView from "@/components/product/ProductView";
-import { getProduct, products } from "@/data/products";
+import { products as editorial } from "@/data/products";
+import { getCatalog, getCatalogProduct } from "@/lib/catalog";
 import { getAllProductImages, getProductImages } from "@/lib/images";
 
 export function generateStaticParams() {
-  return products.map((p) => ({ slug: p.slug }));
+  return editorial.map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata(props: PageProps<"/product/[slug]">): Promise<Metadata> {
   const { slug } = await props.params;
-  const p = getProduct(slug);
+  const p = await getCatalogProduct(slug);
   return p ? { title: p.name, description: `${p.tagline} ${p.description}` } : {};
 }
 
@@ -26,7 +27,8 @@ export default function ProductPage(props: PageProps<"/product/[slug]">) {
 
 async function Product({ params }: { params: PageProps<"/product/[slug]">["params"] }) {
   const { slug } = await params;
-  const product = getProduct(slug);
+  const product = await getCatalogProduct(slug);
+  const products = await getCatalog();
   if (!product) notFound();
 
   const images = await getProductImages(slug);

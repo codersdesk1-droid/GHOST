@@ -1,46 +1,53 @@
 # Ghost™ — Wear a vision
 
-Storefront for GHOST, built with Next.js 16 (App Router), TypeScript and Tailwind CSS v4.
+Streetwear store for GHOST: Next.js 16 (App Router, Cache Components), Tailwind CSS v4, Prisma ORM 8 on
+Prisma Postgres, Clerk accounts and Stripe Checkout, hosted on Vercel.
 
 ## Run it
 
 ```bash
 npm install
-npm run dev        # http://localhost:3000
-npm run build      # production build
+vercel env pull          # writes .env.local (database, Clerk, Stripe keys)
+npm run dev              # http://localhost:3000
+npm run build            # production build (emits the Prisma contract first)
 ```
 
-## Adding your clothing photos
+Local-only settings live in `.env.development.local` (git-ignored, never overwritten by `vercel env pull`):
 
-1. Create a folder per product inside `public/products/`, named after the product's `slug`
-   (see `src/data/products.ts`):
+- `ADMIN_EMAILS`: comma-separated emails allowed into `/admin` (must be verified on the Clerk account).
+- `STRIPE_WEBHOOK_SECRET`: signing secret for webhook events.
 
-   ```
-   public/products/phantom-oversized-tee/
-     void-black-1.jpg      ← shown when "Void Black" is selected
-     void-black-2.jpg
-     bone-1.jpg            ← shown when "Bone" is selected
-   ```
+## How the store works
 
-2. Files are sorted by name; the first is the main image and the second appears on hover in grids.
-   Start a filename with a colour slug (`void-black`, `bone`, `ash`, `fog`, `moss`) to tie it to that colour;
-   otherwise it's shown for every colour.
-3. Use portrait photos (4:5 works best), at least 1600px tall, JPG/WEBP/AVIF.
-4. Restart `npm run dev` (or rebuild) after adding photos. Products without photos show a rendered placeholder.
+| Piece | Where |
+|---|---|
+| Product copy, sizes, colours, quality meters | `src/data/products.ts` |
+| Prices, sale prices, badges, visibility, stock per colour and size | Database (edit in `/admin/products`) |
+| Live catalog (copy + database, cached, refreshed on admin edits and sales) | `src/lib/catalog.ts` |
+| Data contract (tables) | `src/prisma/contract.prisma` |
+| Checkout: re-prices the bag from the database, creates a pending order and a Stripe Checkout Session | `src/app/api/checkout/route.ts` |
+| Webhook: the only place orders become paid and stock is taken (signed, idempotent, row-locked) | `src/app/api/stripe/webhook/route.ts`, `src/lib/orders.ts` |
+| Customer order history | `/account` |
+| Admin: overview, products & stock, orders (status + tracking) | `/admin` |
 
-## Editing products
+Order flow: `pending` → (Stripe webhook) `paid` → `packed` → `shipped` → `delivered`. Expired or failed
+checkouts become `cancelled`. A paid order whose stock ran out between checkout and payment becomes
+`needs_attention`. Refunds are issued in the Stripe dashboard, then marked `refunded` in `/admin/orders`.
 
-Everything lives in **`src/data/products.ts`** — names, USD prices, sale prices, colours, sizes, sold-out sizes,
-fabric weight (GSM), quality meters, details and care. The homepage hero picks its three pieces in `src/app/page.tsx` (`HERO`).
+## Common tasks
 
-## What's here (phase 1)
+- **Add a product:** add it to `src/data/products.ts`, then `npm run db:seed` (adds only what is missing).
+- **Change the schema:** edit `src/prisma/contract.prisma`, run `npx prisma contract emit`, then
+  `npx prisma migration plan --name <change>` and `npx prisma db migrate`.
+- **Photos:** drop them in `public/products/<slug>/`. Start a filename with a colour slug
+  (`void-black-1.jpg`) to tie it to that colour. Portrait 4:5, at least 1600px tall.
 
-- Home: hero carousel with glass hotspot cards, category tabs + product strip, quality anatomy, manifesto, best sellers, FAQ
-- Shop with category filters and sorting, product pages (gallery + zoom, colour/size, size chart, quality meters)
-- Bag drawer + bag page (saved in the browser), FAQ, Quality, policy pages, 404
+## Before taking real orders
 
-## Phase 2 (from the roadmap)
-
-PostgreSQL + Prisma for products/inventory/orders, accounts, server-validated checkout with Razorpay/Stripe
-(verified webhooks), transactional email, admin dashboard, analytics. The checkout button currently shows a
-"coming soon" notice — prices in the browser are never trusted for payment.
+1. Deploy to Vercel and add a Stripe webhook endpoint for `https://<your-domain>/api/stripe/webhook`
+   (events: `checkout.session.completed`, `checkout.session.async_payment_succeeded`,
+   `checkout.session.async_payment_failed`, `checkout.session.expired`). Put its signing secret in Vercel as
+   `STRIPE_WEBHOOK_SECRET`, and set `ADMIN_EMAILS` there too.
+2. Claim the Stripe sandbox and the Clerk app, set the business name to GHOST, and switch to live keys.
+3. Review the policy pages in `src/app/info/[slug]/page.tsx` and set up tax (Stripe Tax needs a registration).
+4. Prisma Postgres Free allows few direct connections; move to the pooled endpoint before real traffic.

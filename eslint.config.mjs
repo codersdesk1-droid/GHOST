@@ -12,6 +12,14 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Vendor agent skills installed by the Prisma, Clerk and Stripe integrations
+    ".agents/**",
+    ".claude/**",
+    ".cursor/**",
+    ".devin/**",
+    // Emitted by `prisma contract emit`
+    "src/prisma/contract.d.ts",
+    "migrations/**/*.d.ts",
   ]),
 ]);
 

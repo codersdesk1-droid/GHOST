@@ -29,7 +29,7 @@ export type Product = {
   description: string;
   colors: Colorway[];
   sizes: string[];
-  soldOut?: string[]; // sizes currently out of stock
+  soldOut?: string[]; // sizes the seed starts at 0 stock (live stock is in the database)
   fabric: string;
   gsm: number;
   fit: string;

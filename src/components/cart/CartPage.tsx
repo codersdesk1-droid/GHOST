@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { formatPrice, getProduct } from "@/data/products";
+import { formatPrice } from "@/data/products";
+import { useCatalog } from "./CatalogProvider";
 import ProductVisual from "../ProductVisual";
 import { Qty } from "./CartDrawer";
 import { pickImage } from "./pickImage";
@@ -10,8 +11,29 @@ import { cart, cartTotals, useCart } from "./store";
 
 export default function CartPage({ images }: { images: Record<string, string[]> }) {
   const { lines } = useCart();
-  const t = cartTotals(lines);
-  const [notice, setNotice] = useState(false);
+  const find = useCatalog();
+  const t = cartTotals(lines, find);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function checkout() {
+    setBusy(true);
+    setError(null);
+    try {
+      // The server re-prices everything from the database; this is just the bag.
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ lines: lines.filter((l) => find(l.slug)) }),
+      });
+      const data = (await res.json().catch(() => ({}))) as { url?: string; error?: string };
+      if (!res.ok || !data.url) throw new Error(data.error ?? "Checkout couldn't start. Please try again.");
+      window.location.assign(data.url);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Checkout couldn't start. Please try again.");
+      setBusy(false);
+    }
+  }
 
   return (
     <div className="mx-auto max-w-[1200px] px-5 pt-36 sm:px-10">
@@ -28,7 +50,8 @@ export default function CartPage({ images }: { images: Record<string, string[]> 
         <div className="mt-12 grid gap-10 lg:grid-cols-[1.6fr_1fr]">
           <ul className="divide-y divide-line border-y border-line">
             {lines.map((l) => {
-              const p = getProduct(l.slug)!;
+              const p = find(l.slug);
+              if (!p) return null;
               const color = p.colors.find((c) => c.name === l.color) ?? p.colors[0];
               return (
                 <li key={`${l.slug}-${l.color}-${l.size}`} className="flex gap-5 py-6">
@@ -92,18 +115,19 @@ export default function CartPage({ images }: { images: Record<string, string[]> 
               <span className="eyebrow">Total</span>
               <span className="font-display text-4xl">{formatPrice(t.total)}</span>
             </div>
-            {/* Phase 2: create the order + payment session on the server, never trust this total. */}
             <button
-              onClick={() => setNotice(true)}
-              className="mt-6 h-14 w-full rounded-full bg-bone text-void transition hover:bg-white"
+              onClick={checkout}
+              disabled={busy}
+              className="mt-6 h-14 w-full rounded-full bg-bone text-void transition hover:bg-white disabled:cursor-wait disabled:opacity-60"
             >
-              Checkout
+              {busy ? "Opening secure checkout…" : "Checkout"}
             </button>
-            {notice && (
-              <p className="mt-4 text-center text-sm text-mist" role="status">
-                Online checkout opens with the first drop. Join the Séance list below to get early access.
+            {error && (
+              <p className="mt-4 text-center text-sm text-[#e8b4a0]" role="alert">
+                {error}
               </p>
             )}
+            <p className="mt-4 text-center text-xs text-fog">Secure payment by Stripe. Cards, wallets and more.</p>
           </aside>
         </div>
       )}

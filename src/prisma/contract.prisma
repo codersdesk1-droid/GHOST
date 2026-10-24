@@ -1,0 +1,78 @@
+// use prisma-8
+
+// Commerce data that changes at runtime: prices, stock and orders.
+// Editorial copy (descriptions, meters, care) stays in src/data/products.ts;
+// `npm run db:seed` syncs new products and variants from that file.
+
+model Product {
+  id             Int                          @id @default(autoincrement())
+  slug           String                       @unique
+  name           String
+  priceCents     Int
+  compareAtCents Int?
+  badge          String?
+  active         Boolean                      @default(true)
+  variants       Variant[]
+  createdAt      TimestamptzString            @default(now())
+  updatedAt      temporal.updatedAtString()
+}
+
+model Variant {
+  id        Int     @id @default(autoincrement())
+  productId Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  color     String
+  size      String
+  sku       String  @unique
+  stock     Int     @default(0)
+
+  @@unique([productId, color, size])
+  @@index([productId])
+}
+
+model Order {
+  id                    Int                          @id @default(autoincrement())
+  number                String                       @unique
+  clerkUserId           String?
+  email                 String?
+  // pending → paid → packed → shipped → delivered; or cancelled / refunded / needs_attention
+  status                String                       @default("pending")
+  subtotalCents         Int
+  shippingCents         Int
+  totalCents            Int
+  currency              String                       @default("usd")
+  stripeSessionId       String?                      @unique
+  stripePaymentIntentId String?
+  shippingName          String?
+  shippingAddress       String?
+  trackingNumber        String?
+  items                 OrderItem[]
+  createdAt             TimestamptzString            @default(now())
+  updatedAt             temporal.updatedAtString()
+
+  @@index([clerkUserId])
+  @@index([status])
+}
+
+model OrderItem {
+  id             Int    @id @default(autoincrement())
+  orderId        Int
+  order          Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  variantId      Int
+  productSlug    String
+  productName    String
+  color          String
+  size           String
+  sku            String
+  unitPriceCents Int
+  quantity       Int
+
+  @@index([orderId])
+}
+
+// Stripe event ids already handled, so a retried webhook never fulfils twice.
+model ProcessedEvent {
+  id        String            @id
+  type      String
+  createdAt TimestamptzString @default(now())
+}

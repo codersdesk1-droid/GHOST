@@ -1,7 +1,9 @@
 "use client";
 
+import { Show, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useCatalog } from "./cart/CatalogProvider";
 import { cart, cartTotals, useCart } from "./cart/store";
 import { Wordmark } from "./Logo";
 
@@ -15,7 +17,8 @@ const NAV = [
 
 export default function Header() {
   const { lines } = useCart();
-  const { count } = cartTotals(lines);
+  const find = useCatalog();
+  const { count } = cartTotals(lines, find);
   const [scrolled, setScrolled] = useState(false);
   const [menu, setMenu] = useState(false);
 
@@ -59,6 +62,17 @@ export default function Header() {
               {n.label}
             </Link>
           ))}
+          <Show when="signed-out">
+            <Link href="/sign-in" className="eyebrow hidden !text-bone/70 transition hover:!text-bone sm:inline">
+              Sign in
+            </Link>
+          </Show>
+          <Show when="signed-in">
+            <Link href="/account" className="eyebrow hidden !text-bone/70 transition hover:!text-bone sm:inline">
+              Orders
+            </Link>
+            <UserButton />
+          </Show>
           <button
             onClick={() => cart.setOpen(true)}
             className="eyebrow flex items-center gap-2 !text-bone"
@@ -78,7 +92,7 @@ export default function Header() {
           menu ? "max-h-96 p-6 opacity-100" : "pointer-events-none max-h-0 p-0 opacity-0"
         }`}
       >
-        {NAV.map((n) => (
+        {[...NAV, { href: "/account", label: "Account & orders" }].map((n) => (
           <Link key={n.href} href={n.href} onClick={() => setMenu(false)} className="border-b border-line py-3 font-display text-2xl last:border-0">
             {n.label}
           </Link>

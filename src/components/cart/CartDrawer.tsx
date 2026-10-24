@@ -2,14 +2,16 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
-import { formatPrice, getProduct } from "@/data/products";
+import { formatPrice } from "@/data/products";
+import { useCatalog } from "./CatalogProvider";
 import ProductVisual from "../ProductVisual";
 import { cart, cartTotals, useCart, type CartLine } from "./store";
 import { pickImage } from "./pickImage";
 
 export default function CartDrawer({ images }: { images: Record<string, string[]> }) {
   const { lines, open } = useCart();
-  const totals = cartTotals(lines);
+  const find = useCatalog();
+  const totals = cartTotals(lines, find);
 
   useEffect(() => {
     if (!open) return;
@@ -105,7 +107,7 @@ function Row({ label, value, hint }: { label: string; value: string; hint?: stri
 }
 
 function Line({ line, images }: { line: CartLine; images: string[] }) {
-  const p = getProduct(line.slug);
+  const p = useCatalog()(line.slug);
   if (!p) return null;
   const color = p.colors.find((c) => c.name === line.color) ?? p.colors[0];
   return (
