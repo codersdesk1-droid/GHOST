@@ -41,14 +41,14 @@ function itemsTable(items: { productName: string; color: string; size: string; q
 async function send(to: string, subject: string, html: string, replyTo: string) {
   const key = process.env.RESEND_API_KEY;
   if (!key) {
-    console.warn(`[email] RESEND_API_KEY not set; skipped "${subject}" to ${to}`);
+    console.warn(`[email] RESEND_API_KEY not set; skipped "${subject}"`);
     return false;
   }
   const settings = await getSettings();
   const from = process.env.EMAIL_FROM || `${settings.storeName} <onboarding@resend.dev>`;
   const { error } = await new Resend(key).emails.send({ from, to, subject, html, ...(replyTo ? { replyTo } : {}) });
   if (error) {
-    console.error(`[email] "${subject}" to ${to} failed:`, error.message);
+    console.error(`[email] "${subject}" failed:`, error.message);
     return false;
   }
   return true;

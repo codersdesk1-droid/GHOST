@@ -1,12 +1,18 @@
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 import { getRole } from "@/lib/auth";
+import { rateLimit, tooManyRequests } from "@/lib/rate-limit";
+import { clientKey, isSameOrigin } from "@/lib/security";
 
 /**
  * Issues short-lived upload tokens so admin photos go straight from the browser
  * to Vercel Blob (no 4.5 MB function limit). Only owners and staff get a token.
  */
 export async function POST(request: Request) {
-  const body = (await request.json()) as HandleUploadBody;
+  if (!isSameOrigin(request)) return Response.json({ error: "Forbidden" }, { status: 403 });
+  const limited = await rateLimit("upload", clientKey(request.headers), { limit: 60, windowSeconds: 60 });
+  if (!limited.ok) return tooManyRequests(limited.retryAfter);
+  const body = (await request.json().catch(() => null)) as HandleUploadBody | null;
+  if (!body) return Response.json({ error: "Bad request" }, { status: 400 });
   try {
     const result = await handleUpload({
       body,

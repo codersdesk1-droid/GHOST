@@ -12,14 +12,14 @@
     "prebuild": "prisma contract emit"
   },
   "dependencies": {
-    "@clerk/nextjs": "7.9.20",
+    "@clerk/nextjs": "7.9.21",
     "@prisma/orm-postgres": "8.0.0-rc.20",
     "@vercel/blob": "2.8.2",
     "dotenv": "18.0.9",
     "next": "16.4.3",
     "pg": "8.22.0",
-    "react": "19.3.0",
-    "react-dom": "19.3.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
     "resend": "6.34.1",
     "server-only": "^0.0.1",
     "stripe": "23.0.1"
@@ -36,5 +36,12 @@
     "prisma": "8.0.0-rc.27",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "overrides": {
+    "zod": "4.6.7",
+    "hono": "4.13.14",
+    "@hono/node-server": "1.19.17",
+    "lodash": "4.18.1",
+    "valibot": "1.5.0"
   }
 }

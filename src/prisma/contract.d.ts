@@ -23,7 +23,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'5120befc26df15da41f40c9710267692e826fead84b7ecddc1ca088281372da5'>;
+  StorageHashBase<'5296d8fb63940bc3198ba31ae10bb8f8c97626a7b23d1883f6c7e2b4fbebdf07'>;
 export type ExecutionHash =
   ExecutionHashBase<'06e59e6833caeb850a9af95b24abbbec1ca7e00fbd25999af5d80b15e3506dbc'>;
 export type ProfileHash =
@@ -369,6 +369,12 @@ export namespace Models {
     product: public_Product;
     readonly [RelationKeys]?: 'product';
   };
+  export type public_RateLimit = {
+    count: FieldOutputTypes['public']['RateLimit']['count'];
+    expiresAt: FieldOutputTypes['public']['RateLimit']['expiresAt'];
+    key: FieldOutputTypes['public']['RateLimit']['key'];
+    readonly [RelationKeys]?: never;
+  };
   export type public_StaffMember = {
     createdAt: FieldOutputTypes['public']['StaffMember']['createdAt'];
     email: FieldOutputTypes['public']['StaffMember']['email'];
@@ -414,6 +420,7 @@ export declare const models: {
     ProductColor: Models.public_ProductColor;
     ProductImage: Models.public_ProductImage;
     ProductMeter: Models.public_ProductMeter;
+    RateLimit: Models.public_RateLimit;
     StaffMember: Models.public_StaffMember;
     StoreSettings: Models.public_StoreSettings;
     Variant: Models.public_Variant;
@@ -1104,6 +1111,43 @@ type ContractBase = Omit<
                 },
               ];
             };
+            readonly RateLimit: {
+              columns: {
+                readonly count: {
+                  readonly dataType: 'pg/int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/int4@1', 0>;
+                  };
+                  readonly many: false;
+                };
+                readonly expiresAt: {
+                  readonly dataType: 'pg/int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly key: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
+              };
+              primaryKey: { readonly columns: readonly ['key'] };
+              uniques: readonly [];
+              indexes: readonly [
+                {
+                  readonly name: 'RateLimit_expiresAt_idx_6b6b8c10';
+                  readonly prefix: 'RateLimit_expiresAt_idx';
+                  readonly columns: readonly ['expiresAt'];
+                  readonly unique: false;
+                },
+              ];
+              foreignKeys: readonly [];
+            };
             readonly StaffMember: {
               columns: {
                 readonly createdAt: {
@@ -1390,6 +1434,7 @@ type ContractBase = Omit<
       readonly namespace: 'public' & NamespaceId;
       readonly model: 'ProductMeter';
     };
+    readonly RateLimit: { readonly namespace: 'public' & NamespaceId; readonly model: 'RateLimit' };
     readonly StaffMember: {
       readonly namespace: 'public' & NamespaceId;
       readonly model: 'StaffMember';
@@ -1956,6 +2001,32 @@ type ContractBase = Omit<
                 readonly position: { readonly column: 'position' };
                 readonly productId: { readonly column: 'productId' };
                 readonly value: { readonly column: 'value' };
+              };
+            };
+          };
+          readonly RateLimit: {
+            readonly fields: {
+              readonly count: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly expiresAt: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly key: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+            };
+            readonly relations: Record<string, never>;
+            readonly storage: {
+              readonly table: 'RateLimit';
+              readonly namespaceId: 'public';
+              readonly fields: {
+                readonly count: { readonly column: 'count' };
+                readonly expiresAt: { readonly column: 'expiresAt' };
+                readonly key: { readonly column: 'key' };
               };
             };
           };

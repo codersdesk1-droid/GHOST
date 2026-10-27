@@ -159,3 +159,13 @@ model StaffMember {
   role      String            @default("staff")
   createdAt TimestamptzString @default(now())
 }
+
+// Fixed-window request counters for rate limiting (key = route:client:window).
+// Rows expire after their window; old ones are swept automatically.
+model RateLimit {
+  key       String @id
+  count     Int    @default(0)
+  expiresAt Int
+
+  @@index([expiresAt])
+}

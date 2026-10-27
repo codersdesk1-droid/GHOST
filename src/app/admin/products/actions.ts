@@ -7,6 +7,7 @@ import { categories, slugify } from "@/data/products";
 import type { ActionState } from "@/app/admin/actions";
 import { requireStaff } from "@/lib/auth";
 import { CATALOG_TAG } from "@/lib/catalog";
+import { isOwnBlobUrl } from "@/lib/security";
 import { db } from "@/prisma/db";
 
 const BADGES = ["New", "Best seller", "Limited"];
@@ -139,15 +140,31 @@ export async function saveProduct(_: ActionState, form: FormData): Promise<Actio
 }
 
 /** Record a photo that the browser just uploaded to Blob. */
+const isId = (n: unknown): n is number => Number.isInteger(n) && (n as number) > 0;
+
+/** A colour name must be one of the product's colours (or null for every colour). */
+async function checkColor(productId: number, color: unknown) {
+  if (color === null || color === "" || color === undefined) return null;
+  if (typeof color !== "string") throw new Error("Bad colour");
+  const found = await db.orm.public.ProductColor.where({ productId, name: color }).first();
+  if (!found) throw new Error("Unknown colour");
+  return color;
+}
+
 export async function addPhoto(input: { productId: number; url: string; pathname: string; color: string | null }) {
   await requireStaff();
-  if (!/^https:\/\/[a-z0-9-]+\.public\.blob\.vercel-storage\.com\//.test(input.url)) throw new Error("Not a store photo URL");
+  if (!isId(input?.productId)) throw new Error("Bad product");
+  if (typeof input.url !== "string" || !isOwnBlobUrl(input.url)) throw new Error("Not a photo from this store");
+  if (typeof input.pathname !== "string" || !input.pathname.startsWith("products/") || input.pathname.length > 300) {
+    throw new Error("Bad path");
+  }
+  const color = await checkColor(input.productId, input.color);
   const last = await db.orm.public.ProductImage.where({ productId: input.productId }).orderBy((i) => i.position.desc()).first();
   await db.orm.public.ProductImage.create({
     productId: input.productId,
     url: input.url,
     pathname: input.pathname,
-    color: input.color || null,
+    color,
     alt: "",
     position: (last?.position ?? -1) + 1,
   });
@@ -156,13 +173,19 @@ export async function addPhoto(input: { productId: number; url: string; pathname
 
 export async function updatePhoto(input: { id: number; color: string | null; alt: string }) {
   await requireStaff();
-  await db.orm.public.ProductImage.where({ id: input.id }).update({ color: input.color || null, alt: input.alt.slice(0, 160) });
+  if (!isId(input?.id)) throw new Error("Bad photo");
+  const photo = await db.orm.public.ProductImage.first({ id: input.id });
+  if (!photo) return;
+  const color = await checkColor(photo.productId, input.color);
+  const alt = typeof input.alt === "string" ? input.alt.trim().slice(0, 160) : "";
+  await db.orm.public.ProductImage.where({ id: photo.id }).update({ color, alt });
   updateTag(CATALOG_TAG);
 }
 
 /** Move a photo one place earlier (-1) or later (+1). */
 export async function movePhoto(input: { id: number; dir: -1 | 1 }) {
   await requireStaff();
+  if (!isId(input?.id) || (input.dir !== -1 && input.dir !== 1)) throw new Error("Bad move");
   const photo = await db.orm.public.ProductImage.first({ id: input.id });
   if (!photo) return;
   const all = await db.orm.public.ProductImage.where({ productId: photo.productId }).orderBy((i) => i.position.asc()).all();
@@ -178,9 +201,10 @@ export async function movePhoto(input: { id: number; dir: -1 | 1 }) {
 
 export async function deletePhoto(input: { id: number }) {
   await requireStaff();
+  if (!isId(input?.id)) throw new Error("Bad photo");
   const photo = await db.orm.public.ProductImage.first({ id: input.id });
   if (!photo) return;
   await db.orm.public.ProductImage.where({ id: photo.id }).delete();
-  await del(photo.url).catch(() => {}); // the database row is what the store reads; a leftover file is harmless
+  if (isOwnBlobUrl(photo.url)) await del(photo.url).catch(() => {}); // the database row is what the store reads; a leftover file is harmless
   updateTag(CATALOG_TAG);
 }

@@ -26,7 +26,7 @@ export async function saveSettings(_: ActionState, form: FormData): Promise<Acti
     storeName,
     tagline: text(form, "tagline", 80),
     contactEmail,
-    instagram: text(form, "instagram", 60).replace(/^@/, ""),
+    instagram: text(form, "instagram", 60).replace(/^@/, "").replace(/[^A-Za-z0-9._]/g, ""),
     announcement: text(form, "announcement", 120),
     shippingCents: Math.round(shipping * 100),
     freeShippingCents: Math.round(freeOver * 100),
@@ -63,6 +63,7 @@ export async function addStaff(_: ActionState, form: FormData): Promise<ActionSt
 
 export async function removeStaff(input: { id: number }) {
   await requireOwner();
+  if (!Number.isInteger(input?.id) || input.id <= 0) throw new Error("Bad staff id");
   await db.orm.public.StaffMember.where({ id: input.id }).delete();
   revalidatePath("/admin/staff");
 }

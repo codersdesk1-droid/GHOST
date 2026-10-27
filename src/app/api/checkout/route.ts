@@ -1,9 +1,12 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { createPendingOrder, CheckoutError, type CheckoutLine } from "@/lib/orders";
+import { rateLimitAll, tooManyRequests } from "@/lib/rate-limit";
+import { clientKey, isSameOrigin } from "@/lib/security";
 import { stripe } from "@/lib/stripe";
 import { db } from "@/prisma/db";
 
 const MAX_LINES = 20;
+const MAX_BODY_BYTES = 16_000;
 const SHIP_TO = ["US", "CA", "GB", "IE", "AU", "NZ", "IN", "DE", "FR", "NL", "SE", "DK", "JP", "SG", "AE"] as const;
 
 function parseLines(body: unknown): CheckoutLine[] | null {
@@ -20,7 +23,26 @@ function parseLines(body: unknown): CheckoutLine[] | null {
 }
 
 export async function POST(req: Request) {
-  const lines = parseLines(await req.json().catch(() => null));
+  // Only our own pages may start a checkout, and only with a small JSON body.
+  if (!isSameOrigin(req)) return Response.json({ error: "Forbidden" }, { status: 403 });
+  if (!req.headers.get("content-type")?.startsWith("application/json")) {
+    return Response.json({ error: "Expected JSON" }, { status: 415 });
+  }
+  const raw = await req.text();
+  if (raw.length > MAX_BODY_BYTES) return Response.json({ error: "Your bag is too big." }, { status: 413 });
+
+  // Each checkout creates an order and a Stripe session, so cap how often one visitor can start one.
+  const limited = await rateLimitAll("checkout", clientKey(req.headers), [
+    { limit: 8, windowSeconds: 60 },
+    { limit: 40, windowSeconds: 3600 },
+  ]);
+  if (!limited.ok) return tooManyRequests(limited.retryAfter);
+
+  let body: unknown = null;
+  try {
+    body = JSON.parse(raw);
+  } catch {}
+  const lines = parseLines(body);
   if (!lines) return Response.json({ error: "Your bag looks off. Refresh and try again." }, { status: 400 });
 
   const { userId } = await auth();

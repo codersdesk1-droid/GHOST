@@ -45,3 +45,7 @@ next-env.d.ts
 node_modules/
 dist/
 .env
+
+# Agent skill copies for editors this project does not use
+.cursor/
+.devin/

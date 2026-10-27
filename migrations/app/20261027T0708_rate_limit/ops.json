@@ -1,0 +1,99 @@
+[
+  {
+    "id": "table.RateLimit",
+    "label": "Create table \"RateLimit\"",
+    "summary": "Creates table \"RateLimit\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "RateLimit"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"RateLimit\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"RateLimit\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"RateLimit\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"RateLimit\"",
+        "sql": "CREATE TABLE \"public\".\"RateLimit\" (\n  \"count\" int4 DEFAULT 0 NOT NULL,\n  \"expiresAt\" int4 NOT NULL,\n  \"key\" text NOT NULL,\n  PRIMARY KEY (\"key\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"RateLimit\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3))) AS \"result\"",
+        "params": [
+          "\"public\".\"RateLimit\"",
+          "r",
+          "p"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"RateLimit\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "index.RateLimit.RateLimit_expiresAt_idx_6b6b8c10",
+    "label": "Create index \"RateLimit_expiresAt_idx_6b6b8c10\" on \"RateLimit\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "RateLimit_expiresAt_idx_6b6b8c10",
+        "table": "RateLimit"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"RateLimit_expiresAt_idx_6b6b8c10\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"RateLimit_expiresAt_idx_6b6b8c10\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"RateLimit_expiresAt_idx_6b6b8c10\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"RateLimit_expiresAt_idx_6b6b8c10\"",
+        "sql": "CREATE INDEX \"RateLimit_expiresAt_idx_6b6b8c10\" ON \"public\".\"RateLimit\" (\"expiresAt\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"RateLimit_expiresAt_idx_6b6b8c10\" exists on \"RateLimit\" with the planned definition",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_index\" AS \"i\" ON \"i\".\"indexrelid\" = \"c\".\"oid\" INNER JOIN \"pg_am\" AS \"m\" ON \"m\".\"oid\" = \"c\".\"relam\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3) AND \"i\".\"indrelid\" = to_regclass($4) AND NOT (\"i\".\"indisunique\") AND \"m\".\"amname\" = $5 AND (\"i\".\"indexprs\" IS NULL AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"i\".\"indkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"i\".\"indrelid\" AND key_attribute.attnum = key_column.attnum) = ($6)::jsonb) AND \"i\".\"indpred\" IS NULL)) AS \"result\"",
+        "params": [
+          "\"public\".\"RateLimit_expiresAt_idx_6b6b8c10\"",
+          "i",
+          "I",
+          "\"public\".\"RateLimit\"",
+          "btree",
+          "[\"expiresAt\"]"
+        ]
+      }
+    ]
+  }
+]
